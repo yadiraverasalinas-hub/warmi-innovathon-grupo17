@@ -17,6 +17,10 @@ La configuración se muestra al primer uso y no vuelve a aparecer automáticamen
 
 El tutorial y la opción para borrar los datos están dentro de esa configuración, no en Preferencias. El indicador que evita repetir la configuración se conserva al borrar los demás datos de la app.
 
+Preferencias ofrece tema, tamaño de letra, presentación en cuadros o lista y un saludo opcional con el nombre elegido. Limpiar Favoritas no modifica contactos ni la configuración de confianza.
+
+La configuración solicita dos contactos con número peruano de 9 dígitos; permite agregar un tercero opcional. El prefijo `+51` se muestra por separado.
+
 ## Estructura
 
 - `src/data/`: recetas, artículos de bienestar y establecimientos de demostración.
@@ -29,7 +33,7 @@ El tutorial y la opción para borrar los datos están dentro de esa configuraci�
 
 ## Privacidad y límites
 
-- Favoritas, contactos y tema se guardan en el almacenamiento local del navegador. La opción de borrado elimina solo esos datos de esta aplicación.
+- Favoritas, contactos y preferencias se guardan en el almacenamiento local del navegador. Limpiar Favoritas solo borra recetas guardadas; el borrado completo está dentro de la configuración discreta.
 - El asistente usa respuestas predefinidas; no es una IA ni un servicio profesional. El chat no se guarda.
 - La ubicación se solicita solo tras una acción explícita. No se guarda ni se comparte en segundo plano. Antes de abrir WhatsApp se muestra el mensaje para que la persona lo revise.
 - Los establecimientos y coordenadas del mapa son ejemplos no verificados; no son puntos seguros ni recomendaciones de destino.

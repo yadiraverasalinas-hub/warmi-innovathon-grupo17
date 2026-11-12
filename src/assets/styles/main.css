@@ -25,6 +25,10 @@
   --line: #483b50;
 }
 
+:root[data-font-size="small"] { font-size: 14px; }
+:root[data-font-size="normal"] { font-size: 16px; }
+:root[data-font-size="large"] { font-size: 18px; }
+
 * { box-sizing: border-box; }
 body {
   min-width: 320px;
@@ -60,6 +64,10 @@ h1, h2, h3 { line-height: 1.2; }
 .hero h2 { margin: 4px 0 6px; }
 .section-title { margin: 20px 0 10px; font-size: 1.15rem; }
 .recipe-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.recipe-grid.list-layout { grid-template-columns: 1fr; }
+.recipe-grid.list-layout .recipe-open { display: flex; min-height: 92px; align-items: center; }
+.recipe-grid.list-layout .recipe-open img { flex: 0 0 88px; width: 88px; height: 88px; object-fit: cover; }
+.recipe-grid.list-layout .recipe-card-copy { min-width: 0; }
 .recipe-card { position: relative; min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 17px; background: var(--card); }
 .recipe-open { display: block; width: 100%; padding: 0; border: 0; color: inherit; background: transparent; text-align: left; }
 .recipe-open img { display: block; width: 100%; height: 124px; object-fit: cover; }
@@ -103,7 +111,13 @@ h1, h2, h3 { line-height: 1.2; }
 .progress { height: 8px; margin: 5px 0 18px; overflow: hidden; border-radius: 8px; background: var(--line); }
 .progress span { display: block; height: 100%; background: var(--accent); transition: width .2s ease; }
 .setup-toolbar { position: sticky; z-index: 8; top: 0; display: flex; justify-content: flex-end; margin: -18px -16px 12px; padding: 10px 16px; background: var(--bg); }
-.quick-exit { min-height: 40px; }
+.button.quick-exit { min-height: 46px; color: #fff; background: #b93840; border-color: #b93840; }
+.setup-tips { display: grid; gap: 8px; margin: 0 0 14px; }
+.setup-tip { display: flex; align-items: flex-start; gap: 10px; margin: 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--card); font-size: .9rem; line-height: 1.45; }
+.setup-tip > span:first-child { flex: 0 0 24px; font-size: 1.15rem; }
+.setup-more { margin: 0 0 14px; color: var(--muted); font-size: .86rem; }
+.setup-more summary { width: fit-content; color: var(--accent); font-weight: 650; cursor: pointer; }
+.setup-more p { margin: 8px 0 0; line-height: 1.5; }
 .setup-choice { display: flex; width: 100%; align-items: center; gap: 12px; margin-bottom: 9px; padding: 9px; border: 1px solid var(--line); border-radius: 14px; color: var(--ink); background: var(--card); text-align: left; }
 .setup-choice.selected { border: 2px solid var(--accent); }
 .setup-choice img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; }
@@ -112,6 +126,15 @@ h1, h2, h3 { line-height: 1.2; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 .contact-fields { margin: 0 0 12px; }
 .contact-fields label { display: block; margin: 8px 0 4px; font-size: .88rem; font-weight: 600; }
+.phone-field { display: flex; align-items: center; gap: 8px; }
+.phone-field > span { min-width: 44px; padding: 12px 8px; border: 1px solid var(--line); border-radius: 14px; background: var(--accent-soft); text-align: center; }
+.phone-field .field { min-width: 0; margin-bottom: 10px; }
+.remove-contact { min-height: 38px; padding: 7px 12px; }
+.settings-fields { display: grid; gap: 14px; }
+.settings-fields label { display: grid; gap: 5px; font-size: .88rem; font-weight: 600; }
+.settings-fields input, .settings-fields select { width: 100%; min-height: 44px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--card); }
+.theme-toggle { width: 52px !important; height: 48px; justify-self: start; font-size: 1.25rem; }
+.settings-actions .clear-favorites { margin-top: 6px; }
 .demo-map-marker { display: grid; width: 32px; height: 32px; place-items: center; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #756c79; box-shadow: 0 1px 5px rgb(0 0 0 / 40%); font-size: 1rem; font-weight: 700; }
 .current-location-marker { display: grid; width: 22px; height: 22px; place-items: center; border: 2px solid #fff; border-radius: 50%; background: #2778d1; box-shadow: 0 1px 5px rgb(0 0 0 / 45%); }
 .current-location-marker span { width: 8px; height: 8px; border-radius: 50%; background: #fff; }

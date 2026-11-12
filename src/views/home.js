@@ -1,5 +1,5 @@
 import { recipes } from '../data/recipes.js';
-import { renderRecipeCard } from '../components/recipeCard.js';
+import { recipeGridClass, renderRecipeCard } from '../components/recipeCard.js';
 import { escapeHTML } from '../utils/security.js';
 
 export function renderHome(state) {
@@ -22,6 +22,6 @@ export function renderHome(state) {
       ${['Todas', 'Fondo', 'Postres', 'Rápidas'].map((category) => `<button class="chip ${state.category === category ? 'active' : ''}" type="button" data-action="category" data-category="${escapeHTML(category)}" aria-pressed="${state.category === category}">${category === 'Fondo' ? 'Platos de fondo' : escapeHTML(category)}</button>`).join('')}
     </div>
     <h2 class="section-title">Recetas populares</h2>
-    <div class="recipe-grid">${visibleRecipes.map((recipe) => renderRecipeCard(recipe, state.favorites)).join('')}</div>
+    <div class="${recipeGridClass(state)}">${visibleRecipes.map((recipe) => renderRecipeCard(recipe, state.favorites)).join('')}</div>
   </section>`;
 }

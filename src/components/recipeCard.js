@@ -1,5 +1,9 @@
 import { escapeHTML } from '../utils/security.js';
 
+export function recipeGridClass(state) {
+  return state.preferences?.recipeLayout === 'list' ? 'recipe-grid list-layout' : 'recipe-grid';
+}
+
 export function renderRecipeCard(recipe, favorites) {
   const favorite = favorites.includes(recipe.id);
   return `<article class="recipe-card">

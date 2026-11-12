@@ -3,7 +3,7 @@ import './assets/styles/components.css';
 import './assets/styles/responsive.css';
 import { recipes } from './data/recipes.js';
 import { appState, resetTransientState } from './state/appState.js';
-import { loadSettings, markSetupCompleted, saveFavorites, saveProfile, clearAppData } from './services/storage.js';
+import { loadSettings, markSetupCompleted, saveFavorites, saveProfile, savePreferences, clearAppData } from './services/storage.js';
 import { getCurrentLocation } from './services/geolocation.js';
 import { contactMessageURL, shareRecipe } from './services/sharing.js';
 import { renderMap, destroyMap } from './services/map.js';
@@ -40,6 +40,7 @@ try {
   const settings = loadSettings();
   appState.favorites = settings.favorites;
   appState.profile = settings.profile;
+  appState.preferences = settings.preferences;
   const returningUser = settings.setupCompleted || settings.hasPriorUse || Boolean(navigator.serviceWorker?.controller);
   initialSetupRequired = !returningUser;
   if (returningUser && !settings.setupCompleted) markSetupCompleted();
@@ -50,11 +51,36 @@ try {
 }
 
 function renderSettings() {
+  const isDark = appState.preferences.theme === 'dark';
   const content = `<div class="settings-actions">
+    <div class="settings-fields">
+      <label for="setting-name">Tu nombre
+        <input id="setting-name" data-preference="name" maxlength="40" value="${escapeHTML(appState.preferences.name)}" autocomplete="given-name">
+      </label>
+      <label for="setting-font-size">Tamaño de letra
+        <select id="setting-font-size" data-preference="fontSize">
+          <option value="small" ${appState.preferences.fontSize === 'small' ? 'selected' : ''}>Pequeña</option>
+          <option value="normal" ${appState.preferences.fontSize === 'normal' ? 'selected' : ''}>Normal</option>
+          <option value="large" ${appState.preferences.fontSize === 'large' ? 'selected' : ''}>Grande</option>
+        </select>
+      </label>
+      <label for="setting-recipe-layout">Cómo ver las recetas
+        <select id="setting-recipe-layout" data-preference="recipeLayout">
+          <option value="grid" ${appState.preferences.recipeLayout === 'grid' ? 'selected' : ''}>En cuadros</option>
+          <option value="list" ${appState.preferences.recipeLayout === 'list' ? 'selected' : ''}>En lista</option>
+        </select>
+      </label>
+    </div>
+    <button class="button secondary" type="button" data-action="clear-favorites">Limpiar favoritas</button>
+    <button class="button secondary theme-toggle" type="button" data-action="toggle-theme" aria-label="${isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}">${isDark ? '☀️' : '🌙'}</button>
     ${deferredInstallPrompt ? '<button class="button secondary" type="button" data-action="install-app">Instalar aplicación</button>' : '<p class="note">Para instalar: usa la opción del navegador “Añadir a pantalla de inicio”, si está disponible.</p>'}
-    <button class="button secondary" type="button" data-action="toggle-theme">Cambiar tema</button>
   </div>`;
   return renderModal('Preferencias', content);
+}
+
+function applyPreferences() {
+  document.documentElement.dataset.theme = appState.preferences.theme;
+  document.documentElement.dataset.fontSize = appState.preferences.fontSize;
 }
 
 function renderApp() {
@@ -70,9 +96,12 @@ function renderApp() {
     return;
   }
 
-  const title = appState.recipeId
+  let title = appState.recipeId
     ? ['Receta', '']
     : (titles[appState.tab] ?? titles.home);
+  if (!appState.recipeId && appState.tab === 'home' && appState.preferences.name) {
+    title = [`Hola, ${appState.preferences.name}`, title[1]];
+  }
   const content = appState.recipeId
     ? renderRecipeDetail(appState)
     : ({
@@ -112,7 +141,7 @@ function navigateToApp() {
   appState.shareDraft = null;
   appState.setupStep = 0;
   appState.setupRecipeId = null;
-  appState.setupContacts = [{ name: '', phone: '' }, { name: '', phone: '' }, { name: '', phone: '' }];
+  appState.setupContacts = [{ name: '', phone: '' }, { name: '', phone: '' }];
   appState.setupError = '';
   appState.setupFromSecret = false;
   history.replaceState(null, '', `${location.pathname}${location.search}`);
@@ -122,10 +151,11 @@ function navigateToApp() {
 function startSetup() {
   appState.setupStep = 0;
   appState.setupRecipeId = appState.profile.trustedRecipeId;
+  const contactCount = Math.max(2, Math.min(3, appState.profile.contacts.length));
   appState.setupContacts = [...appState.profile.contacts, ...Array.from(
-    { length: Math.max(0, 3 - appState.profile.contacts.length) },
+    { length: Math.max(0, contactCount - appState.profile.contacts.length) },
     () => ({ name: '', phone: '' })
-  )].slice(0, 3);
+  )].slice(0, contactCount);
   appState.setupError = '';
 }
 
@@ -286,7 +316,8 @@ async function handleClick(event) {
         markSetupCompleted();
         appState.favorites = [];
         appState.profile = { trustedRecipeId: null, contacts: [] };
-        delete document.documentElement.dataset.theme;
+        appState.preferences = { theme: 'light', fontSize: 'normal', recipeLayout: 'grid', name: '' };
+        applyPreferences();
         resetTransientState();
         appState.mode = 'app';
         initialSetupRequired = false;
@@ -298,14 +329,29 @@ async function handleClick(event) {
         showToast(error.message);
       }
       break;
-    case 'toggle-theme': {
-      const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = nextTheme;
+    case 'clear-favorites':
+      if (!window.confirm('¿Quitar todas las recetas de Favoritas? Las demás preferencias se conservarán.')) break;
       try {
-        localStorage.setItem('camuflaje.theme', nextTheme);
+        saveFavorites([]);
+        appState.favorites = [];
+        renderApp();
+        showToast('Se limpiaron tus recetas favoritas.');
       } catch (error) {
         console.error(error);
-        showToast('No se pudo guardar la preferencia del tema.');
+        showToast(error.message);
+      }
+      break;
+    case 'toggle-theme': {
+      const nextTheme = appState.preferences.theme === 'dark' ? 'light' : 'dark';
+      try {
+        const preferences = { ...appState.preferences, theme: nextTheme };
+        savePreferences(preferences);
+        appState.preferences = preferences;
+        applyPreferences();
+        renderApp();
+      } catch (error) {
+        console.error(error);
+        showToast(error.message);
       }
       break;
     }
@@ -353,6 +399,20 @@ async function handleClick(event) {
       appState.setupRecipeId = target.dataset.id;
       renderApp();
       break;
+    case 'add-setup-contact':
+      if (appState.setupContacts.length < 3) {
+        appState.setupContacts.push({ name: '', phone: '' });
+        renderApp();
+      }
+      break;
+    case 'remove-setup-contact': {
+      const index = Number(target.dataset.index);
+      if (index >= 2 && index < appState.setupContacts.length) {
+        appState.setupContacts.splice(index, 1);
+        renderApp();
+      }
+      break;
+    }
     case 'setup-back':
       appState.setupStep = Math.max(0, appState.setupStep - 1);
       appState.setupError = '';
@@ -464,7 +524,43 @@ root.addEventListener('input', (event) => {
     appState.setupContacts[Number(target.dataset.contactName)].name = target.value;
   }
   if (target.matches('[data-contact-phone]')) {
+    let digits = target.value.replace(/\D/g, '');
+    if (digits.length > 9 && digits.startsWith('51')) digits = digits.slice(2);
+    target.value = digits.slice(0, 9);
     appState.setupContacts[Number(target.dataset.contactPhone)].phone = target.value;
+  }
+  if (target.matches('[data-preference="name"]')) {
+    appState.preferences.name = target.value.trim().slice(0, 40);
+    const title = document.querySelector('[data-secret-title]');
+    if (title) title.textContent = appState.preferences.name ? `Hola, ${appState.preferences.name}` : 'Recetario Casero';
+  }
+});
+
+root.addEventListener('change', (event) => {
+  const target = event.target;
+  if (!target.matches('[data-preference]')) return;
+
+  const key = target.dataset.preference;
+  const value = key === 'name'
+    ? target.value.trim().slice(0, 40)
+    : target.value;
+  if (key === 'fontSize' && !['small', 'normal', 'large'].includes(value)) return;
+  if (key === 'recipeLayout' && !['grid', 'list'].includes(value)) return;
+  if (key !== 'name' && key !== 'fontSize' && key !== 'recipeLayout') return;
+
+  try {
+    const preferences = { ...appState.preferences, [key]: value };
+    savePreferences(preferences);
+    appState.preferences = preferences;
+    applyPreferences();
+    if (key === 'recipeLayout') {
+      document.querySelectorAll('.recipe-grid').forEach((grid) => {
+        grid.classList.toggle('list-layout', value === 'list');
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    showToast(error.message);
   }
 });
 
@@ -497,14 +593,7 @@ window.addEventListener('beforeinstallprompt', (event) => {
   if (appState.modal === 'settings') renderApp();
 });
 
-try {
-  const savedTheme = localStorage.getItem('camuflaje.theme');
-  if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
-} catch (error) {
-  console.error(error);
-  showToast('No se pudo leer la preferencia del tema.');
-}
-
+applyPreferences();
 route();
 if (appState.storageError) showToast(appState.storageError);
 

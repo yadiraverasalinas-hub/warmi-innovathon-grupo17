@@ -1,5 +1,5 @@
 import { recipes } from '../data/recipes.js';
-import { renderRecipeCard } from '../components/recipeCard.js';
+import { recipeGridClass, renderRecipeCard } from '../components/recipeCard.js';
 import { escapeHTML, normalizeText } from '../utils/security.js';
 
 export function renderSearch(state) {
@@ -7,7 +7,7 @@ export function renderSearch(state) {
     <h2 id="search-title" class="section-title">Busca una receta o ingrediente</h2>
     <label class="sr-only" for="recipe-search">Buscar</label>
     <input class="search-input" id="recipe-search" type="search" data-input="search" placeholder="Ej.: arroz, pollo..." value="${escapeHTML(state.query)}" autocomplete="off">
-    <div id="search-results" class="recipe-grid" aria-live="polite">${renderSearchResults(state)}</div>
+    <div id="search-results" class="${recipeGridClass(state)}" aria-live="polite">${renderSearchResults(state)}</div>
   </section>`;
 }
 

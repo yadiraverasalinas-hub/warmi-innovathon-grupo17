@@ -14,9 +14,10 @@ export const appState = {
   shareDraft: null,
   setupStep: 0,
   setupRecipeId: null,
-  setupContacts: [{ name: '', phone: '' }, { name: '', phone: '' }, { name: '', phone: '' }],
+  setupContacts: [{ name: '', phone: '' }, { name: '', phone: '' }],
   setupError: '',
   setupFromSecret: false,
+  preferences: { theme: 'light', fontSize: 'normal', recipeLayout: 'grid', name: '' },
   demoStep: 0
 };
 
@@ -32,7 +33,7 @@ export function resetTransientState() {
   appState.shareDraft = null;
   appState.setupStep = 0;
   appState.setupRecipeId = null;
-  appState.setupContacts = [{ name: '', phone: '' }, { name: '', phone: '' }, { name: '', phone: '' }];
+  appState.setupContacts = [{ name: '', phone: '' }, { name: '', phone: '' }];
   appState.setupError = '';
   appState.setupFromSecret = false;
 }
