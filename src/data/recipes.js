@@ -7,7 +7,7 @@ export const recipes = [
     time: '35 min',
     servings: 4,
     difficulty: 'Media',
-    image: '/images/lomo.jpg',
+    image: `${import.meta.env.BASE_URL}images/lomo.jpg`,
     ingredients: ['500 g de lomo en tiras', '2 cebollas', '2 tomates', '1 ají amarillo', 'Sillao y vinagre', 'Papas fritas y arroz'],
     steps: ['Sella la carne a fuego muy fuerte.', 'Agrega cebolla, tomate y ají.', 'Añade sillao y vinagre.', 'Sirve con papas fritas y arroz.']
   },
@@ -19,7 +19,7 @@ export const recipes = [
     time: '50 min',
     servings: 4,
     difficulty: 'Media',
-    image: '/images/aji.jpg',
+    image: `${import.meta.env.BASE_URL}images/aji.jpg`,
     ingredients: ['1 pechuga de pollo cocida', '4 panes remojados en leche', '3 ajíes amarillos licuados', '1 cebolla', 'Nueces o maní', 'Papas sancochadas'],
     steps: ['Deshilacha el pollo.', 'Sofríe cebolla y ají.', 'Licúa el pan con la leche y agrégalo.', 'Mezcla con el pollo y sirve sobre papas.']
   },
@@ -31,7 +31,7 @@ export const recipes = [
     time: '45 min',
     servings: 6,
     difficulty: 'Fácil',
-    image: '/images/arroz.jpg',
+    image: `${import.meta.env.BASE_URL}images/arroz.jpg`,
     ingredients: ['1 taza de arroz', '1 litro de leche', '1 lata de leche evaporada', '1 rama de canela', 'Azúcar al gusto'],
     steps: ['Cocina el arroz con la canela.', 'Agrega la leche poco a poco.', 'Endulza y cocina a fuego bajo.', 'Sirve tibio con canela en polvo.']
   },
@@ -43,7 +43,7 @@ export const recipes = [
     time: '30 min',
     servings: 4,
     difficulty: 'Fácil',
-    image: '/images/causa.jpg',
+    image: `${import.meta.env.BASE_URL}images/causa.jpg`,
     ingredients: ['1 kg de papa amarilla', 'Ají amarillo', 'Limón', 'Pollo o atún', 'Palta', 'Mayonesa'],
     steps: ['Prensa las papas y mézclalas con ají y limón.', 'Arma capas con relleno de pollo o atún.', 'Decora con palta.', 'Enfría antes de servir.']
   }

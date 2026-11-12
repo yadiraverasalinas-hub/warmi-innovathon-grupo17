@@ -3,7 +3,7 @@ import './assets/styles/components.css';
 import './assets/styles/responsive.css';
 import { recipes } from './data/recipes.js';
 import { appState, resetTransientState } from './state/appState.js';
-import { loadSettings, saveFavorites, saveProfile, clearAppData } from './services/storage.js';
+import { loadSettings, markSetupCompleted, saveFavorites, saveProfile, clearAppData } from './services/storage.js';
 import { getCurrentLocation } from './services/geolocation.js';
 import { contactMessageURL, shareRecipe } from './services/sharing.js';
 import { renderMap, destroyMap } from './services/map.js';
@@ -31,9 +31,19 @@ const titles = {
 };
 
 let deferredInstallPrompt = null;
+let initialSetupRequired = false;
+let returnToSetupAfterDemo = false;
+let secretTitleTapCount = 0;
+let lastSecretTitleTap = 0;
 
 try {
-  Object.assign(appState, loadSettings());
+  const settings = loadSettings();
+  appState.favorites = settings.favorites;
+  appState.profile = settings.profile;
+  const returningUser = settings.setupCompleted || settings.hasPriorUse || Boolean(navigator.serviceWorker?.controller);
+  initialSetupRequired = !returningUser;
+  if (returningUser && !settings.setupCompleted) markSetupCompleted();
+  if (!returningUser) markSetupCompleted();
 } catch (error) {
   console.error(error);
   appState.storageError = error.message;
@@ -41,20 +51,15 @@ try {
 
 function renderSettings() {
   const content = `<div class="settings-actions">
-    <p class="note">Tus favoritas y contactos se guardan en este dispositivo. Las conversaciones y la ubicación no se guardan.</p>
-    <a class="button secondary" href="#setup">Configurar receta y contactos de confianza</a>
-    <a class="button secondary" href="#demo">Ver demostración</a>
     ${deferredInstallPrompt ? '<button class="button secondary" type="button" data-action="install-app">Instalar aplicación</button>' : '<p class="note">Para instalar: usa la opción del navegador “Añadir a pantalla de inicio”, si está disponible.</p>'}
     <button class="button secondary" type="button" data-action="toggle-theme">Cambiar tema</button>
-    <button class="button secondary" type="button" data-action="clear-app-data">Borrar mis datos guardados</button>
-    <p class="note">Recetario Casero · aplicación de demostración. No ofrece monitoreo ni garantiza la seguridad de establecimientos.</p>
   </div>`;
-  return renderModal('Ajustes', content);
+  return renderModal('Preferencias', content);
 }
 
 function renderApp() {
   if (appState.mode === 'setup') {
-    root.innerHTML = `${renderSetup(appState)}<button class="button secondary full" type="button" data-action="skip-setup">Volver a mis recetas</button>`;
+    root.innerHTML = renderSetup(appState);
     destroyMap();
     return;
   }
@@ -79,8 +84,8 @@ function renderApp() {
     }[appState.tab] ?? (() => renderHome(appState)))();
   const modal = appState.modal === 'settings' ? renderSettings() : '';
 
-  root.innerHTML = `<header class="topbar"><div><h1>${escapeHTML(title[0])}</h1>${title[1] ? `<p>${escapeHTML(title[1])}</p>` : ''}</div>
-      <button class="icon-button" type="button" data-action="open-settings" aria-label="Abrir ajustes">⚙</button>
+  root.innerHTML = `<header class="topbar"><div><h1 ${!appState.recipeId && appState.tab === 'home' ? 'data-secret-title' : ''}>${escapeHTML(title[0])}</h1>${title[1] ? `<p>${escapeHTML(title[1])}</p>` : ''}</div>
+      <button class="icon-button" type="button" data-action="open-settings" aria-label="Preferencias">⚙</button>
     </header>${content}${renderNavigation(appState.tab)}${modal}`;
 
   if (appState.tab === 'shop' && !appState.recipeId) {
@@ -101,9 +106,15 @@ function renderApp() {
 }
 
 function navigateToApp() {
+  initialSetupRequired = false;
   appState.mode = 'app';
   appState.modal = null;
   appState.shareDraft = null;
+  appState.setupStep = 0;
+  appState.setupRecipeId = null;
+  appState.setupContacts = [{ name: '', phone: '' }, { name: '', phone: '' }, { name: '', phone: '' }];
+  appState.setupError = '';
+  appState.setupFromSecret = false;
   history.replaceState(null, '', `${location.pathname}${location.search}`);
   renderApp();
 }
@@ -121,16 +132,38 @@ function startSetup() {
 function route() {
   const hash = location.hash;
   if (hash === '#setup') {
-    if (appState.mode !== 'setup') startSetup();
+    if (appState.mode !== 'setup') {
+      startSetup();
+      appState.setupFromSecret = true;
+    }
     appState.mode = 'setup';
   } else if (hash === '#demo') {
+    returnToSetupAfterDemo = appState.mode === 'setup';
     appState.mode = 'demo';
     appState.demoStep = 0;
+  } else if (initialSetupRequired) {
+    if (appState.mode !== 'setup') startSetup();
+    appState.mode = 'setup';
   } else {
     appState.mode = 'app';
   }
   appState.modal = null;
   appState.location = null;
+  renderApp();
+}
+
+function openHiddenSetup() {
+  secretTitleTapCount = 0;
+  startSetup();
+  appState.setupFromSecret = true;
+  appState.mode = 'setup';
+  try {
+    markSetupCompleted();
+  } catch (error) {
+    console.error(error);
+    showToast(error.message);
+  }
+  history.replaceState(null, '', `${location.pathname}${location.search}#setup`);
   renderApp();
 }
 
@@ -250,11 +283,14 @@ async function handleClick(event) {
       if (!window.confirm('¿Borrar favoritas, contactos y preferencias guardados por esta aplicación en este dispositivo?')) break;
       try {
         clearAppData();
+        markSetupCompleted();
         appState.favorites = [];
         appState.profile = { trustedRecipeId: null, contacts: [] };
         delete document.documentElement.dataset.theme;
         resetTransientState();
         appState.mode = 'app';
+        initialSetupRequired = false;
+        history.replaceState(null, '', `${location.pathname}${location.search}`);
         showToast('Se borraron las favoritas, contactos y preferencias de esta aplicación.');
         renderApp();
       } catch (error) {
@@ -350,16 +386,32 @@ async function handleClick(event) {
         saveProfile(appState.profile);
         const favorites = [...new Set([appState.profile.trustedRecipeId, ...appState.favorites].filter(Boolean))];
         saveFavorites(favorites);
+        markSetupCompleted();
         appState.favorites = favorites;
-        appState.tab = 'fav';
+        appState.tab = 'home';
         navigateToApp();
       } catch (error) {
         console.error(error);
         showToast(error.message);
       }
       break;
-    case 'skip-setup':
+    case 'quick-exit':
+      try {
+        markSetupCompleted();
+      } catch (error) {
+        console.error(error);
+        showToast(error.message);
+      }
+      navigateToApp();
+      break;
     case 'leave-demo':
+      if (returnToSetupAfterDemo) {
+        returnToSetupAfterDemo = false;
+        history.replaceState(null, '', `${location.pathname}${location.search}#setup`);
+        appState.mode = 'setup';
+        renderApp();
+        break;
+      }
       navigateToApp();
       break;
     case 'demo-previous':
@@ -380,6 +432,19 @@ async function handleClick(event) {
       break;
   }
 }
+
+root.addEventListener('click', (event) => {
+  const title = event.target.closest('[data-secret-title]');
+  if (!title) {
+    secretTitleTapCount = 0;
+    return;
+  }
+  const now = Date.now();
+  if (now - lastSecretTitleTap > 2500) secretTitleTapCount = 0;
+  lastSecretTitleTap = now;
+  secretTitleTapCount += 1;
+  if (secretTitleTapCount === 5) openHiddenSetup();
+});
 
 root.addEventListener('click', (event) => {
   handleClick(event).catch((error) => {

@@ -3,9 +3,7 @@ import { escapeHTML } from '../utils/security.js';
 const items = [
   ['home', '⌂', 'Inicio'],
   ['search', '⌕', 'Buscar'],
-  ['fav', '♡', 'Favoritas'],
-  ['shop', '⌖', 'Tiendas'],
-  ['well', '✿', 'Bienestar']
+  ['fav', '♡', 'Favoritas']
 ];
 
 export function renderNavigation(activeTab) {

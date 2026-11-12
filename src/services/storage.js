@@ -3,7 +3,8 @@ import { validateContact } from '../utils/validation.js';
 const KEYS = {
   favorites: 'camuflaje.favorites',
   profile: 'camuflaje.profile',
-  theme: 'camuflaje.theme'
+  theme: 'camuflaje.theme',
+  setupCompleted: 'camuflaje.setupCompleted'
 };
 
 function readJSON(key, fallback) {
@@ -18,6 +19,9 @@ function readJSON(key, fallback) {
 export function loadSettings() {
   let favorites = readJSON(KEYS.favorites, null);
   let profile = readJSON(KEYS.profile, null);
+  const setupCompleted = readJSON(KEYS.setupCompleted, false) === true;
+  const hasPriorUse = [KEYS.favorites, KEYS.profile, KEYS.theme, 'fav', 'trust', 'contacts']
+    .some((key) => localStorage.getItem(key) !== null);
   if (favorites === null) favorites = readJSON('fav', []);
   if (profile === null) {
     const oldContacts = readJSON('contacts', []);
@@ -30,6 +34,8 @@ export function loadSettings() {
   }
   return {
     favorites: Array.isArray(favorites) ? favorites.filter((id) => typeof id === 'string') : [],
+    setupCompleted,
+    hasPriorUse,
     profile: {
       trustedRecipeId: typeof profile?.trustedRecipeId === 'string' ? profile.trustedRecipeId : null,
       contacts: Array.isArray(profile?.contacts)
@@ -40,6 +46,14 @@ export function loadSettings() {
         : []
     }
   };
+}
+
+export function markSetupCompleted() {
+  try {
+    localStorage.setItem(KEYS.setupCompleted, 'true');
+  } catch (error) {
+    throw new Error('No se pudo guardar el estado de configuración en este dispositivo.', { cause: error });
+  }
 }
 
 export function saveFavorites(favorites) {
@@ -60,7 +74,7 @@ export function saveProfile(profile) {
 
 export function clearAppData() {
   try {
-    for (const key of Object.values(KEYS)) localStorage.removeItem(key);
+    for (const key of [KEYS.favorites, KEYS.profile, KEYS.theme]) localStorage.removeItem(key);
     for (const key of ['fav', 'trust', 'contacts']) localStorage.removeItem(key);
   } catch (error) {
     throw new Error('No se pudieron borrar los datos de esta aplicación.', { cause: error });

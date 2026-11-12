@@ -16,6 +16,7 @@ export const appState = {
   setupRecipeId: null,
   setupContacts: [{ name: '', phone: '' }, { name: '', phone: '' }, { name: '', phone: '' }],
   setupError: '',
+  setupFromSecret: false,
   demoStep: 0
 };
 
@@ -33,4 +34,5 @@ export function resetTransientState() {
   appState.setupRecipeId = null;
   appState.setupContacts = [{ name: '', phone: '' }, { name: '', phone: '' }, { name: '', phone: '' }];
   appState.setupError = '';
+  appState.setupFromSecret = false;
 }

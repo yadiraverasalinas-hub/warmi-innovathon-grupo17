@@ -102,6 +102,8 @@ h1, h2, h3 { line-height: 1.2; }
 .modal-close { position: absolute; top: 13px; right: 14px; width: 42px; height: 42px; border: 0; border-radius: 50%; color: var(--ink); background: var(--accent-soft); font-size: 1.6rem; }
 .progress { height: 8px; margin: 5px 0 18px; overflow: hidden; border-radius: 8px; background: var(--line); }
 .progress span { display: block; height: 100%; background: var(--accent); transition: width .2s ease; }
+.setup-toolbar { position: sticky; z-index: 8; top: 0; display: flex; justify-content: flex-end; margin: -18px -16px 12px; padding: 10px 16px; background: var(--bg); }
+.quick-exit { min-height: 40px; }
 .setup-choice { display: flex; width: 100%; align-items: center; gap: 12px; margin-bottom: 9px; padding: 9px; border: 1px solid var(--line); border-radius: 14px; color: var(--ink); background: var(--card); text-align: left; }
 .setup-choice.selected { border: 2px solid var(--accent); }
 .setup-choice img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; }

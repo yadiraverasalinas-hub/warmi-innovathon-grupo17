@@ -11,6 +11,12 @@ npm run dev
 
 La aplicación de producción se genera con `npm run build` y se puede revisar con `npm run preview`.
 
+## Configuración discreta
+
+La configuración se muestra al primer uso y no vuelve a aparecer automáticamente. Para abrirla después, toca cinco veces seguidas el título de la pantalla Inicio o usa el enlace especial `URL_PUBLICADA#setup`. La facilitadora puede compartir ese enlace y explicar el flujo en persona; cualquier persona que tenga el enlace podrá abrir la configuración.
+
+El tutorial y la opción para borrar los datos están dentro de esa configuración, no en Preferencias. El indicador que evita repetir la configuración se conserva al borrar los demás datos de la app.
+
 ## Estructura
 
 - `src/data/`: recetas, artículos de bienestar y establecimientos de demostración.
