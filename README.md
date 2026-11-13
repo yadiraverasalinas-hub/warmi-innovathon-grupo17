@@ -1,43 +1,98 @@
-# Recetario Casero
+# Recetario Casero · Camuflaje
 
-Aplicación de recetas y bienestar migrada a Vite y JavaScript vanilla con módulos ES. La versión anterior está conservada en [`legacy/index.original.html`](./legacy/index.original.html).
+**Un recetario que sigue siendo un recetario, y que permite a una mujer en riesgo pedir ayuda sin que se note.**
 
-## Desarrollo
+Proyecto del equipo __ para el **Warmi Innovathon de Makipuray** · Eje 3: Prevención y seguridad.
+
+🔗 **Prueba el MVP:** (https://yadiraverasalinas-hub.github.io/warmi-innovathon-grupo17/)
+🎥 **Pitch:** 5 minutos · guion en [`docs/PITCH.md`](docs/PITCH.md)
+
+---
+
+## El reto
+
+> ¿Cómo podríamos ayudar a una mujer en riesgo a pedir ayuda de forma rápida y discreta, acompañándola a la vez en el acceso seguro a información y atención de su salud física y mental?
+
+Si quien la agrede o la controla revisa su celular, escribir "ayuda" o abrir una app de emergencia puede ponerla en más riesgo. Pero **mandar una receta a una amiga no levanta sospechas.**
+
+## Nuestra idea
+
+- **La receta es una petición de ayuda disimulada.** Quien agrede o controla puede revisar su celular, y ella no puede escribir "ayuda" ni llamar. Con un solo toque, la app envía por WhatsApp un mensaje que parece cualquier receta a una persona de confianza que ya sabe qué significa: *"te necesito ahora"*.
+- **Un acuerdo previo, en persona, define qué hacer y qué no.** No es para ocultarle algo al contacto, sino para que sepa responder sin ponerse en riesgo ni delatarla.
+- **Se ve como un recetario normal.** Búsqueda, categorías, favoritas y fichas de receta. No hay botones ni textos de emergencia a la vista.
+- **Configuración de una sola vez**, con explicación clara, un botón de **Salir rápido** y un acceso discreto para volver a cambiar sus datos.
+- **Control total de la usuaria.** Revisa el mensaje antes de enviarlo y la ubicación se comparte solo si ella lo decide, cada vez.
+- **Orientación dentro del mismo recetario:** artículos breves, teléfonos de apoyo en Perú y un asistente de respuestas predefinidas.
+- **Pensada para acompañarse "de mano en mano":** una facilitadora puede entregar la app, hacer la configuración junto con la usuaria y explicarle el acuerdo.
+
+## Cómo probarlo en 2 minutos
+
+1. Abre el enlace del prototipo en tu celular (idealmente en modo incógnito, para ver la primera vez).
+2. Verás la **configuración inicial**: tres tarjetas, elige una receta de confianza y anota dos contactos de prueba. Prueba también **Salir rápido**.
+3. Explora el recetario: no hay pistas de la función de ayuda.
+4. Abre una receta, compártela con tu contacto de prueba y revisa el **mensaje antes de enviarlo**. Prueba incluir la ubicación.
+5. En **Bienestar**: lee los artículos, los teléfonos de apoyo y escribe al asistente (*"tengo miedo"*).
+6. Instálala desde el navegador ("Añadir a pantalla de inicio") y ábrela sin conexión.
+
+> Usa **solo datos de prueba**. La forma de reabrir la configuración se muestra en la demo en vivo.
+
+## Lo que no hacemos (y lo decimos)
+
+- **No es una app de emergencia.** No llama a emergencias, no vigila y no monitorea.
+- **Discreta no es invisible.** Alguien con acceso al celular podría abrirla o revisar lo guardado en el navegador.
+- El mensaje enviado **queda en el historial de WhatsApp**; recomendamos activar mensajes temporales en ese chat o borrarlo.
+- Los puntos del mapa son **ejemplos no verificados**; no son lugares seguros.
+- El asistente usa **respuestas predefinidas**. Decidimos no usar IA generativa en un tema tan delicado.
+- Si hay peligro inmediato, busca ayuda local cuando sea seguro hacerlo.
+
+## Privacidad
+
+- Favoritas, contactos y preferencias se guardan **solo en el dispositivo** (almacenamiento local del navegador). No hay servidor ni cuentas.
+- La ubicación se pide **solo tras una acción explícita**; no se guarda ni se comparte en segundo plano.
+- "Borrar mis datos" elimina lo guardado por esta app.
+- Sin analítica ni rastreadores. El modo sin conexión guarda solo los recursos de la propia app.
+
+## Cómo está hecho
+
+Vite · JavaScript vanilla (módulos ES) · Leaflet · PWA con service worker.
 
 ```sh
 npm install
-npm run dev
+npm run dev        # desarrollo
+npm run build      # producción
+npm run preview    # revisar el build
+npm test           # pruebas
 ```
 
-La aplicación de producción se genera con `npm run build` y se puede revisar con `npm run preview`.
+```
+src/
+  main.js · state/ · services/ · views/ · components/ · data/ · utils/
+public/   manifiesto, service worker, iconos, imágenes
+specs/    spec, plan y tareas (Spec-Driven Development)
+docs/     constitución, pitch, pruebas manuales
+AGENTS.md reglas para los agentes de IA del equipo
+```
 
-## Configuración discreta
+### Cómo trabajamos
 
-La configuración se muestra al primer uso y no vuelve a aparecer automáticamente. Para abrirla después, toca cinco veces seguidas el título de la pantalla Inicio o usa el enlace especial `URL_PUBLICADA#setup`. La facilitadora puede compartir ese enlace y explicar el flujo en persona; cualquier persona que tenga el enlace podrá abrir la configuración.
+Spec-Driven Development: **sin spec no hay código**. Cada issue y PR cita su requisito (RF), las pruebas salen de la spec y todo entra a `main` por pull request. Usamos agentes de IA para construir; **la IA propone y una persona decide**. Ver [`AGENTS.md`](AGENTS.md) y [`specs/001-camuflaje-recetario/`](specs/001-camuflaje-recetario/).
 
-El tutorial y la opción para borrar los datos están dentro de esa configuración, no en Preferencias. El indicador que evita repetir la configuración se conserva al borrar los demás datos de la app.
+## Después del Innovathon
 
-Preferencias ofrece tema, tamaño de letra, presentación en cuadros o lista y un saludo opcional con el nombre elegido. Limpiar Favoritas no modifica contactos ni la configuración de confianza.
+| Cuándo | Qué |
+|---|---|
+| **Dic 2026** | Co-diseño con Makipuray: validar el mensaje de la señal y los contenidos con facilitadoras; verificar con organizaciones locales los puntos de ayuda reales; mejorar protección de la configuración (PIN) y nombres neutros de almacenamiento |
+| **Ene–mar 2027** | Piloto acompañado con beneficiarias, entrega con facilitadoras y monitoreo del impacto |
 
-La configuración solicita dos contactos con número peruano de 9 dígitos; permite agregar un tercero opcional. El prefijo `+51` se muestra por separado.
+## Equipo
 
-## Estructura
+- Benites Javier, Estrella Nayeli · [Área]
+- Tadeo Herrera, Jennifer Allison · [Área]
+- Ventocilla Sanchez, Sheyla Marcelina · [Área]
+- Vera Salinas, Yadira Yajaira · [Área]
 
-- `src/data/`: recetas, artículos de bienestar y establecimientos de demostración.
-- `src/state/`: estado temporal de la interfaz.
-- `src/services/`: almacenamiento local, geolocalización, compartir y mapa.
-- `src/components/`: navegación, tarjetas, modales y avisos.
-- `src/views/`: pantallas independientes.
-- `src/assets/styles/`: estilos base, componentes y adaptación móvil.
-- `public/`: manifiesto, icono, imágenes locales y service worker.
+Mentora Makipuray: __
 
-## Privacidad y límites
+---
 
-- Favoritas, contactos y preferencias se guardan en el almacenamiento local del navegador. Limpiar Favoritas solo borra recetas guardadas; el borrado completo está dentro de la configuración discreta.
-- El asistente usa respuestas predefinidas; no es una IA ni un servicio profesional. El chat no se guarda.
-- La ubicación se solicita solo tras una acción explícita. No se guarda ni se comparte en segundo plano. Antes de abrir WhatsApp se muestra el mensaje para que la persona lo revise.
-- Los establecimientos y coordenadas del mapa son ejemplos no verificados; no son puntos seguros ni recomendaciones de destino.
-- El modo sin conexión almacena los recursos de la aplicación en el navegador. El mapa y los enlaces externos requieren conexión; el service worker no cachea servicios de terceros.
-- La instalación y el service worker requieren HTTPS o `localhost`. La ubicación también depende de los permisos del navegador.
-
-No uses los datos de muestra para tomar decisiones de seguridad. Si existe peligro inmediato, busca ayuda local cuando sea seguro hacerlo.
+*Recetario Casero es un prototipo educativo. Los datos de muestra no deben usarse para tomar decisiones de seguridad.*
