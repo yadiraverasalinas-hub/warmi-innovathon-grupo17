@@ -14,6 +14,7 @@
 | Pruebas | **Vitest** (solo desarrollo) | Es la herramienta natural de Vite; cubre la lógica pura. Lo demás, checklist manual |
 | Despliegue | GitHub Pages por GitHub Actions | Gratis, HTTPS (necesario para instalar y geolocalizar) y enlace público para la entrega |
 | Entrada a configuración | Alias de hash neutro + 5 toques al título | Funciona sin backend y sin pista visible |
+| Acceso a orientación | Bienestar fuera de la navegación principal; acceso explícito «Bienestar y apoyo» desde Preferencias | Reduce su exposición casual sin borrar contenido ni depender de un gesto oculto; no se presenta como invisibilidad |
 | Claves de storage | No se renombran en este sprint | Evita migraciones con poco tiempo; riesgo documentado abajo |
 
 ## Arquitectura (lo que ya existe)
@@ -63,7 +64,7 @@ public/              ← manifest, service-worker, iconos, imágenes
 
 ### Engranaje (`main.js`, `renderSettings`)
 
-Solo contenido de recetario: tema (☀️/🌙), tamaño de letra, vista, nombre, limpiar favoritas, instalar. Se retiran los enlaces a configuración y demo, el borrado total y la frase "No ofrece monitoreo…".
+Preferencias conserva las opciones del recetario: tema (☀️/🌙), tamaño de letra, vista, nombre, limpiar favoritas e instalar. Añade un acceso separado, claramente identificado como «Bienestar y apoyo», que abre la vista de orientación existente. Se retiran los enlaces a configuración y demo, el borrado total y la frase "No ofrece monitoreo…". Este acceso secundario no es invisible ni una garantía de seguridad.
 
 ### Gesto secreto
 
@@ -82,6 +83,7 @@ Solo contenido de recetario: tema (☀️/🌙), tamaño de letra, vista, nombre
 - Revisar que el service worker y el manifiesto usen rutas relativas; **subir la versión del caché** en cada entrega.
 - Workflow de GitHub Actions: `npm ci` → `npm run build` → publicar `dist/` en Pages.
 - Verificar en celular real: HTTPS, instalación, sin conexión y permiso de ubicación.
+- Verificar en ≈360 px y escritorio que Bienestar no figura en la navegación principal, que «Bienestar y apoyo» está disponible en Preferencias y que artículos, teléfonos y asistente siguen accesibles.
 
 ## Riesgos y mitigaciones
 

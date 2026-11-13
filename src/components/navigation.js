@@ -4,8 +4,7 @@ const items = [
   ['home', '⌂', 'Inicio'],
   ['search', '⌕', 'Buscar'],
   ['fav', '♡', 'Favoritas'],
-  ['shop', '⌖', 'Tiendas'],
-  ['well', '✿', 'Bienestar']
+  ['shop', '⌖', 'Tiendas']
 ];
 
 export function renderNavigation(activeTab) {

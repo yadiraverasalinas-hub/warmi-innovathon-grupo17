@@ -1,5 +1,14 @@
 .settings-actions { display: grid; gap: 9px; }
 .settings-actions .button { width: 100%; }
+.wellbeing-preference { display: grid; gap: 7px; }
+.wellbeing-preference > p { margin: 0; color: var(--muted); font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.wellbeing-entry { display: flex; width: 100%; min-height: 78px; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 15px; border: 1px solid var(--accent-soft); border-radius: 14px; color: var(--ink); background: var(--bg); text-align: left; }
+.wellbeing-entry > span:first-child { display: grid; gap: 5px; }
+.wellbeing-entry strong { font-size: .95rem; }
+.wellbeing-entry small { color: var(--muted); font-size: .8rem; }
+.wellbeing-entry-arrow { display: grid; width: 30px; height: 30px; flex: 0 0 30px; place-items: center; border-radius: 50%; color: var(--accent); background: var(--accent-soft); font-size: 1.35rem; }
+.wellbeing-backbar { margin: 0 0 12px; }
+.wellbeing-back-button { min-width: 44px; min-height: 44px; padding: 4px 0; border: 0; color: var(--accent); background: transparent; font-weight: 650; text-align: left; }
 .empty-state { padding: 22px 12px; color: var(--muted); text-align: center; line-height: 1.55; }
 .share-preview { white-space: pre-wrap; overflow-wrap: anywhere; padding: 12px; border-radius: 12px; background: var(--accent-soft); }
 .error-text { min-height: 1.4em; color: #a52c3b; font-size: .86rem; }

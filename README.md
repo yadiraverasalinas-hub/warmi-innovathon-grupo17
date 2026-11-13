@@ -22,7 +22,7 @@ Si quien la agrede o la controla revisa su celular, escribir "ayuda" o abrir una
 - **Se ve como un recetario normal.** Búsqueda, categorías, favoritas y fichas de receta. No hay botones ni textos de emergencia a la vista.
 - **Configuración de una sola vez**, con explicación clara, un botón de **Salir rápido** y un acceso discreto para volver a cambiar sus datos.
 - **Control total de la usuaria.** Revisa el mensaje antes de enviarlo y la ubicación se comparte solo si ella lo decide, cada vez.
-- **Orientación dentro del mismo recetario:** artículos breves, teléfonos de apoyo en Perú y un asistente de respuestas predefinidas.
+- **Orientación dentro del mismo recetario:** artículos breves, teléfonos de apoyo en Perú y un asistente de respuestas predefinidas, disponibles desde el apartado **Bienestar y apoyo** en Preferencias.
 - **Pensada para acompañarse "de mano en mano":** una facilitadora puede entregar la app, hacer la configuración junto con la usuaria y explicarle el acuerdo.
 
 ## Cómo probarlo en 2 minutos
@@ -31,7 +31,7 @@ Si quien la agrede o la controla revisa su celular, escribir "ayuda" o abrir una
 2. Verás la **configuración inicial**: tres tarjetas, elige una receta de confianza y anota dos contactos de prueba. Prueba también **Salir rápido**.
 3. Explora el recetario: no hay pistas de la función de ayuda.
 4. Abre una receta, compártela con tu contacto de prueba y revisa el **mensaje antes de enviarlo**. Prueba incluir la ubicación.
-5. En **Bienestar**: lee los artículos, los teléfonos de apoyo y escribe al asistente (*"tengo miedo"*).
+5. Abre **Preferencias → Bienestar y apoyo**: lee los artículos y teléfonos de apoyo y prueba el asistente (*"tengo miedo"*). El acceso es secundario; no vuelve invisible la aplicación.
 6. Instálala desde el navegador ("Añadir a pantalla de inicio") y ábrela sin conexión.
 
 > Usa **solo datos de prueba**. La forma de reabrir la configuración se muestra en la demo en vivo.

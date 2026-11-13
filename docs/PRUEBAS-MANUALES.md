@@ -13,10 +13,13 @@ Dispositivo: __ · Navegador: __ · Fecha: __ · Quién probó: __
 - [ ] Borrar datos del navegador y completar la configuración guarda receta y contactos
 - [ ] Tras completarla, recargar no la reabre
 
-## Recetario sin pistas (RF-14, RF-17)
+## Recetario y acceso secundario a orientación (RF-14, RF-17)
 
-- [ ] Recorrer Inicio, Buscar, Favoritas, Tiendas y Bienestar: no hay textos de configuración, tutorial o borrado
-- [ ] El engranaje solo muestra opciones de recetario (tema, instalar, y extras si están)
+- [ ] Recorrer Inicio, Buscar, Favoritas y Tiendas: Bienestar no aparece en la navegación principal
+- [ ] El engranaje muestra las opciones de recetario y un apartado claramente identificado como "Bienestar y apoyo"
+- [ ] Abrir "Bienestar y apoyo" desde Preferencias: artículos, teléfonos y asistente siguen disponibles y sin cambios
+- [ ] Desde Bienestar, el acceso "‹ Preferencias" vuelve al diálogo de Preferencias
+- [ ] En el recetario y en Preferencias no aparecen textos de configuración oculta, tutorial, borrado total o señal
 - [ ] El ícono de tema cambia entre ☀️ y 🌙
 
 ## Reapertura y borrado (RF-15, RF-16)
@@ -42,6 +45,8 @@ Dispositivo: __ · Navegador: __ · Fecha: __ · Quién probó: __
 
 ## Bienestar (RF-6, RF-7, RF-8)
 
+- [ ] Se puede abrir Bienestar desde Preferencias; no hay una pestaña de Bienestar en la navegación principal
+- [ ] El acceso secundario no se presenta como invisible ni como garantía de seguridad
 - [ ] Los teléfonos se pueden tocar para llamar
 - [ ] Escribir "tengo miedo" muestra la respuesta de apoyo con los teléfonos
 - [ ] El chat no se guarda al recargar

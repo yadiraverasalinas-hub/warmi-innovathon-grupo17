@@ -40,7 +40,7 @@ Esta app puede usarla una persona en peligro. Un error aquí no es solo un bug.
 - **Todo texto que escribe la usuaria** pasa por `escapeHTML` (`src/utils/security.js`).
 - **Sin analítica, trackers ni peticiones a terceros** (salvo los enlaces que la usuaria abre a propósito: WhatsApp, mapas).
 - **Sin IA generativa en las respuestas de apoyo.** El asistente usa respuestas predefinidas y revisadas.
-- **El recetario no delata la función de ayuda.** Fuera de la pantalla de configuración oculta, ningún texto ni enlace habla de configuración, tutorial, borrado ni de la señal. (El contenido de la pestaña Bienestar ya existe y se mantiene como está.)
+- **El recetario no delata la función de ayuda.** La navegación principal se mantiene centrada en recetas y no incluye Bienestar. Desde Preferencias hay un acceso secundario y claramente identificable para la usuaria: «Bienestar y apoyo». Se conserva el contenido actual de orientación y apoyo. Fuera de la pantalla de configuración oculta, ningún texto ni enlace habla de configuración, tutorial, borrado ni de la señal. Esta organización reduce pistas casuales; no vuelve invisible la aplicación ni debe presentarse como una garantía de seguridad.
 - **No renombrar las claves de localStorage** en este sprint (riesgo conocido, ver plan.md).
 - No agregar dependencias sin preguntar. `vitest` (solo desarrollo) está aprobado en el plan.
 

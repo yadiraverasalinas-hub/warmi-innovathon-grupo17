@@ -1,7 +1,7 @@
 # Spec 001: Recetario Casero (Camuflaje)
 
 > Reto Warmi Innovathon · Makipuray · **Eje 3: Prevención y seguridad**
-> Estado: v1 (borrador para el equipo) · Última revisión: 12 nov 2026
+> Estado: v1 (borrador para el equipo) · Última revisión: 13 nov 2026
 
 ## Problema y usuaria
 
@@ -23,7 +23,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 2. **Configuración única:** elige su receta de confianza y anota 2 o 3 personas de confianza.
 3. **Uso normal:** el recetario se ve como cualquier otro.
 4. **Petición de ayuda:** comparte la receta de confianza por WhatsApp con un toque (revisa el mensaje antes de enviar; puede sumar su ubicación si decide).
-5. **Orientación:** en Bienestar encuentra artículos breves, teléfonos de apoyo y un asistente de respuestas predefinidas.
+5. **Orientación:** desde Preferencias abre el apartado claramente identificado «Bienestar y apoyo», donde encuentra artículos breves, teléfonos de apoyo y un asistente de respuestas predefinidas. Bienestar no aparece en la navegación principal.
 
 ## Requisitos (formato EARS)
 
@@ -34,7 +34,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 - **RF-3:** CUANDO comparte una receta que no es la de confianza, EL SISTEMA comparte un mensaje común de receta (compartir del dispositivo o copiar).
 - **RF-4 (señal):** CUANDO comparte su receta de confianza con una persona de confianza, EL SISTEMA prepara un mensaje de WhatsApp con apariencia de invitación a comer y **lo muestra para que ella lo revise** antes de abrir WhatsApp.
 - **RF-5 (ubicación):** CUANDO la usuaria elige explícitamente incluir su ubicación, EL SISTEMA solicita el permiso del navegador y agrega un enlace de mapa al mensaje. EL SISTEMA no guarda la ubicación ni la comparte en segundo plano.
-- **RF-6:** CUANDO la usuaria abre Bienestar, EL SISTEMA muestra artículos breves de apoyo y teléfonos útiles en Perú que se pueden tocar para llamar.
+- **RF-6:** CUANDO la usuaria abre «Bienestar y apoyo» desde Preferencias, EL SISTEMA muestra los artículos breves de apoyo y teléfonos útiles en Perú que se pueden tocar para llamar.
 - **RF-7:** CUANDO la usuaria escribe al asistente palabras de riesgo (miedo, violencia, amenaza, etc.), EL SISTEMA responde con apoyo y los teléfonos de ayuda. EL SISTEMA aclara que es un asistente de respuestas predefinidas y no guarda la conversación.
 - **RF-8:** CUANDO abre Tiendas, EL SISTEMA muestra un mapa con puntos de ejemplo marcados como **no verificados**.
 - **RF-9:** CUANDO la app se instala o se abre sin conexión, EL SISTEMA carga sus propias pantallas y recursos.
@@ -45,10 +45,10 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 - **RF-11 (Must):** CUANDO la usuaria abre la app por primera vez, EL SISTEMA muestra la configuración inicial: una explicación en **tres tarjetas cortas** (qué es, cómo funciona la señal, qué no hace), la elección de la receta de confianza y el registro de contactos.
 - **RF-12 (Must):** CUANDO completa, omite o sale de la configuración, EL SISTEMA no vuelve a mostrarla por sí solo. CUANDO ya existía un perfil guardado, EL SISTEMA no la muestra.
 - **RF-13 (Must):** MIENTRAS la usuaria está en la configuración, EL SISTEMA muestra siempre un botón **"Salir rápido"** bien visible. CUANDO lo toca, EL SISTEMA vuelve al recetario sin guardar lo escrito y sin volver a abrir la configuración.
-- **RF-14 (Must):** MIENTRAS la usuaria está en el recetario, EL SISTEMA no muestra textos, botones ni enlaces que hablen de configuración, tutorial, borrado de datos o señal de ayuda. *(Bienestar, sus artículos y el asistente se mantienen: son orientación general; ver pregunta abierta P-1.)*
+- **RF-14 (Must):** MIENTRAS la usuaria navega por el recetario, EL SISTEMA no muestra textos, botones ni enlaces que hablen de configuración, tutorial, borrado de datos o señal de ayuda, y no incluye Bienestar en la navegación principal. CUANDO la usuaria abre Preferencias, EL SISTEMA ofrece un acceso secundario, claramente identificado como «Bienestar y apoyo», que abre la orientación existente y permite volver a Preferencias. El contenido de artículos, teléfonos y asistente se conserva. Este acceso reduce su exposición casual, pero no hace invisible la aplicación ni impide que alguien explore Preferencias.
 - **RF-15 (Must):** CUANDO la usuaria toca 5 veces seguidas el título del recetario (menos de 1,5 s entre toques) o abre el enlace especial que le dio su facilitadora, EL SISTEMA abre la configuración con sus datos guardados.
 - **RF-16 (Must):** CUANDO está en la configuración, EL SISTEMA le permite ver la demostración y **borrar todos sus datos**. CUANDO borra, EL SISTEMA vuelve al recetario y no abre la configuración sola.
-- **RF-17 (Could):** CUANDO abre el engranaje, EL SISTEMA ofrece solo opciones de recetario: tema claro/oscuro con ícono (☀️/🌙), tamaño de letra, vista en cuadros o lista, nombre para el saludo, limpiar favoritas e instalar la app. Ninguna toca a las personas de confianza.
+- **RF-17 (Could):** CUANDO abre el engranaje, EL SISTEMA ofrece las opciones de recetario: tema claro/oscuro con ícono (☀️/🌙), tamaño de letra, vista en cuadros o lista, nombre para el saludo, limpiar favoritas e instalar la app. Ninguna opción modifica a las personas de confianza. De forma separada, Preferencias ofrece el acceso a «Bienestar y apoyo» definido en RF-14.
 - **RF-18 (Should):** CUANDO registra contactos, EL SISTEMA propone el prefijo +51, abre el teclado numérico, exige 2 contactos y permite un tercero opcional con "+ Agregar otra".
 
 ## Reglas de seguridad y límites
@@ -81,7 +81,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 | RF-11 | Con almacenamiento vacío, al abrir "/" aparece la configuración con las tres tarjetas | Manual |
 | RF-12 | Tras completar, omitir o salir rápido, recargar no reabre la configuración; con perfil previo no aparece | Unitaria + manual |
 | RF-13 | "Salir rápido" visible en todos los pasos; no guarda contactos | Manual |
-| RF-14 | Recorrer todas las pestañas y el engranaje sin encontrar texto de configuración, tutorial o borrado | Manual (checklist) |
+| RF-14 | Confirmar que Bienestar no aparece en la navegación principal; desde Preferencias, abrir «Bienestar y apoyo», verificar artículos, teléfonos y asistente, y volver a Preferencias; comprobar que el recetario no expone textos de configuración, tutorial, borrado o señal | Manual (checklist) |
 | RF-15 | 5 toques en menos de 1,5 s abren la configuración; con pausa mayor, no | Unitaria + manual |
 | RF-16 | Borrar desde configuración limpia todo, quita el hash de la URL y no reabre la configuración | Manual |
 | RF-17 | Cada opción del engranaje cambia lo esperado y persiste | Manual |
@@ -89,7 +89,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 
 ## Preguntas abiertas
 
-- **P-1:** ¿La pestaña Bienestar (artículos sobre relaciones y apoyo) es "pista" suficiente para delatar la app? Hoy se mantiene como orientación general. Validar con la mentora de Makipuray.
+- **P-1:** ¿El acceso secundario a «Bienestar y apoyo» desde Preferencias reduce suficientemente las pistas casuales sin dificultar encontrar orientación? Validar con la mentora de Makipuray y con usuarias antes de considerar el cambio validado. La app no es invisible: quien explore Preferencias puede encontrar este acceso.
 - **P-2:** ¿El texto exacto del mensaje es creíble y seguro? El texto actual (*"Te paso la receta de mi …, ven a probarla"*) **invita a ir**, lo que contradice la regla de no pedir que acuda. Evaluar una redacción neutra que no pida ir a ningún lado. Validar con Makipuray.
 - **P-5:** ¿Una señal o dos? Una receta podría significar "escríbeme cuando puedas" y otra "urgente". Se deja como mejora futura.
 - **P-3:** ¿Los teléfonos de apoyo mostrados siguen vigentes? Confirmar en fuentes oficiales antes de la demo.

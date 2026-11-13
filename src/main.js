@@ -27,7 +27,7 @@ const titles = {
   search: ['Buscar', 'Recetas e ingredientes'],
   fav: ['Favoritas', 'Tus recetas guardadas'],
   shop: ['Tiendas', 'Datos ilustrativos, no verificados'],
-  well: ['Bienestar', 'Orientación y recursos']
+  well: ['Bienestar y apoyo', 'Orientación y recursos']
 };
 
 let deferredInstallPrompt = null;
@@ -71,6 +71,13 @@ function renderSettings() {
         </select>
       </label>
     </div>
+    <div class="wellbeing-preference">
+      <p>Orientación y recursos</p>
+      <button class="wellbeing-entry" type="button" data-action="open-wellbeing">
+        <span><strong>Bienestar y apoyo</strong><small>Artículos, teléfonos y asistente</small></span>
+        <span class="wellbeing-entry-arrow" aria-hidden="true">›</span>
+      </button>
+    </div>
     <button class="button secondary" type="button" data-action="clear-favorites">Limpiar favoritas</button>
     <button class="button secondary theme-toggle" type="button" data-action="toggle-theme" aria-label="${isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}">${isDark ? '☀️' : '🌙'}</button>
     ${deferredInstallPrompt ? '<button class="button secondary" type="button" data-action="install-app">Instalar aplicación</button>' : '<p class="note">Para instalar: usa la opción del navegador “Añadir a pantalla de inicio”, si está disponible.</p>'}
@@ -113,9 +120,13 @@ function renderApp() {
     }[appState.tab] ?? (() => renderHome(appState)))();
   const modal = appState.modal === 'settings' ? renderSettings() : '';
 
-  root.innerHTML = `<header class="topbar"><div><h1 ${!appState.recipeId && appState.tab === 'home' ? 'data-secret-title' : ''}>${escapeHTML(title[0])}</h1>${title[1] ? `<p>${escapeHTML(title[1])}</p>` : ''}</div>
+  const header = appState.tab === 'well' && appState.preferencesReturn
+    ? '<header class="wellbeing-backbar"><button class="wellbeing-back-button" type="button" data-action="back-to-preferences">‹ Preferencias</button></header>'
+    : `<header class="topbar"><div><h1 ${!appState.recipeId && appState.tab === 'home' ? 'data-secret-title' : ''}>${escapeHTML(title[0])}</h1>${title[1] ? `<p>${escapeHTML(title[1])}</p>` : ''}</div>
       <button class="icon-button" type="button" data-action="open-settings" aria-label="Preferencias">⚙</button>
-    </header>${content}${renderNavigation(appState.tab)}${modal}`;
+    </header>`;
+
+  root.innerHTML = `${header}${content}${renderNavigation(appState.tab)}${modal}`;
 
   if (appState.tab === 'shop' && !appState.recipeId) {
     try {
@@ -273,6 +284,7 @@ async function handleClick(event) {
   switch (action) {
     case 'navigate':
       if (appState.tab === 'shop' && target.dataset.tab !== 'shop') appState.location = null;
+      appState.preferencesReturn = null;
       appState.tab = target.dataset.tab;
       appState.recipeId = null;
       appState.selectedPoint = null;
@@ -303,6 +315,30 @@ async function handleClick(event) {
     case 'open-settings':
       appState.modal = 'settings';
       renderApp();
+      break;
+    case 'open-wellbeing':
+      appState.preferencesReturn = { tab: appState.tab, recipeId: appState.recipeId };
+      if (appState.tab === 'shop') {
+        appState.location = null;
+        appState.selectedPoint = null;
+      }
+      appState.tab = 'well';
+      appState.recipeId = null;
+      appState.modal = null;
+      appState.shareDraft = null;
+      appState.chat = [];
+      renderApp();
+      document.querySelector('[data-action="back-to-preferences"]')?.focus();
+      window.scrollTo(0, 0);
+      break;
+    case 'back-to-preferences':
+      if (!appState.preferencesReturn) break;
+      appState.tab = appState.preferencesReturn.tab;
+      appState.recipeId = appState.preferencesReturn.recipeId;
+      appState.preferencesReturn = null;
+      appState.modal = 'settings';
+      renderApp();
+      document.querySelector('[data-action="open-wellbeing"]')?.focus();
       break;
     case 'close-modal':
       appState.modal = null;

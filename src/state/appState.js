@@ -9,6 +9,7 @@ export const appState = {
   showAllShops: true,
   selectedPoint: null,
   modal: null,
+  preferencesReturn: null,
   chat: [],
   location: null,
   shareDraft: null,
@@ -28,6 +29,7 @@ export function resetTransientState() {
   appState.query = '';
   appState.selectedPoint = null;
   appState.modal = null;
+  appState.preferencesReturn = null;
   appState.chat = [];
   appState.location = null;
   appState.shareDraft = null;
