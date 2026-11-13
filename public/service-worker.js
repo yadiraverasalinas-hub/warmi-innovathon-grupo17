@@ -1,4 +1,4 @@
-const CACHE_NAME = 'recetario-casero-v4';
+const CACHE_NAME = 'recetario-casero-v6';
 const APP_ROOT = new URL('./', self.location).href;
 const MANIFEST_URL = new URL('./manifest.webmanifest', self.location).href;
 const STATIC_URLS = [
@@ -6,7 +6,8 @@ const STATIC_URLS = [
   new URL('./icons/icon-192.png', self.location).href,
   new URL('./icons/icon-512.png', self.location).href,
   new URL('./icons/icon.svg', self.location).href,
-  ...['aji.jpg', 'arroz.jpg', 'causa.jpg', 'lomo.jpg'].map((name) => new URL(`./images/${name}`, self.location).href)
+  ...['aji.jpg', 'arroz.jpg', 'causa.jpg', 'lomo.jpg', 'caldo-gallina.jpg', 'chaufa.jpg', 'ceviche.jpg', 'mazamorra-morada.jpg']
+    .map((name) => new URL(`./images/${name}`, self.location).href)
 ];
 
 self.addEventListener('install', (event) => {

@@ -80,9 +80,6 @@ h1, h2, h3 { line-height: 1.2; }
 .recipe-detail li { margin: 0 0 9px; line-height: 1.45; }
 .action-row { display: flex; flex-wrap: wrap; gap: 9px; margin: 14px 0; }
 .action-row > * { flex: 1 1 145px; }
-.contact-actions { display: grid; gap: 8px; margin-top: 10px; }
-.contact-link { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 13px; color: var(--ink); background: var(--card); text-decoration: none; }
-.contact-link small { display: block; color: var(--muted); }
 .banner { margin: 12px 0; padding: 12px 14px; border: 1px solid #e8d7a8; border-radius: 14px; color: #59451a; background: #fff7df; font-size: .84rem; line-height: 1.5; }
 :root[data-theme="dark"] .banner { color: #f2dfaa; background: #3a3020; border-color: #65532d; }
 .tile-map { width: 100%; height: 260px; margin-bottom: 12px; border: 1px solid var(--line); border-radius: 16px; background: #eee9f0; }
@@ -114,7 +111,8 @@ h1, h2, h3 { line-height: 1.2; }
 .button.quick-exit { min-height: 46px; color: #fff; background: #b93840; border-color: #b93840; }
 .setup-tips { display: grid; gap: 8px; margin: 0 0 14px; }
 .setup-tip { display: flex; align-items: flex-start; gap: 10px; margin: 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--card); font-size: .9rem; line-height: 1.45; }
-.setup-tip > span:first-child { flex: 0 0 24px; font-size: 1.15rem; }
+.setup-tip-icon { display: grid; width: 30px; height: 30px; flex: 0 0 30px; place-items: center; border-radius: 10px; color: var(--accent); background: var(--accent-soft); }
+.setup-tip-icon .icon { width: 19px; height: 19px; }
 .setup-more { margin: 0 0 14px; color: var(--muted); font-size: .86rem; }
 .setup-more summary { width: fit-content; color: var(--accent); font-weight: 650; cursor: pointer; }
 .setup-more p { margin: 8px 0 0; line-height: 1.5; }
@@ -133,7 +131,8 @@ h1, h2, h3 { line-height: 1.2; }
 .settings-fields { display: grid; gap: 14px; }
 .settings-fields label { display: grid; gap: 5px; font-size: .88rem; font-weight: 600; }
 .settings-fields input, .settings-fields select { width: 100%; min-height: 44px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--card); }
-.theme-toggle { width: 52px !important; height: 48px; justify-self: start; font-size: 1.25rem; }
+.theme-toggle { width: 52px !important; height: 48px; justify-self: start; }
+.theme-toggle .icon { width: 21px; height: 21px; color: var(--accent); }
 .settings-actions .clear-favorites { margin-top: 6px; }
 .demo-map-marker { display: grid; width: 32px; height: 32px; place-items: center; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #756c79; box-shadow: 0 1px 5px rgb(0 0 0 / 40%); font-size: 1rem; font-weight: 700; }
 .current-location-marker { display: grid; width: 22px; height: 22px; place-items: center; border: 2px solid #fff; border-radius: 50%; background: #2778d1; box-shadow: 0 1px 5px rgb(0 0 0 / 45%); }

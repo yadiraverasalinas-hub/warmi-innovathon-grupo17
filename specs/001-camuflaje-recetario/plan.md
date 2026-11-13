@@ -9,6 +9,7 @@
 | Frontend | JavaScript vanilla con módulos ES, sin framework | Ya está así; cero dependencias y carga rápida en celulares modestos |
 | Empaquetado | Vite 6 | Ya está; build simple y estático |
 | Mapa | Leaflet | Ya está; funciona sin claves ni cuentas |
+| Compartir receta | Vista previa propia con texto y destinatario antes de abrir WhatsApp; SVG locales para las acciones | Mantiene la confirmación explícita, no añade paquetes ni carga iconos externos |
 | Datos | `localStorage` del navegador | Sin backend: nada sale del dispositivo (principio 5) |
 | Sin conexión | Service worker + manifiesto (PWA) | Ya está; instalable desde el navegador |
 | Pruebas | **Vitest** (solo desarrollo) | Es la herramienta natural de Vite; cubre la lógica pura. Lo demás, checklist manual |
@@ -76,6 +77,7 @@ Preferencias conserva las opciones del recetario: tema (☀️/🌙), tamaño de
 
 - **Vitest + jsdom** para: `onboarding` (marca y migración), `tapSequence`, normalización de teléfono y `contactMessageURL`, y `clearAppData`.
 - **Checklist manual** (`docs/PRUEBAS-MANUALES.md`, a crear en T13) en un celular real: primera apertura, salir rápido, recarga, gesto, borrar, instalar, modo sin conexión, ubicación, WhatsApp.
+- Para la receta de confianza se usa una redacción provisional que no invita a acudir a ningún lugar; validarla con Makipuray antes del uso real (P-2).
 
 ## Despliegue
 

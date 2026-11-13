@@ -17,7 +17,7 @@ Si quien la agrede o la controla revisa su celular, escribir "ayuda" o abrir una
 
 ## Nuestra idea
 
-- **La receta es una petición de ayuda disimulada.** Quien agrede o controla puede revisar su celular, y ella no puede escribir "ayuda" ni llamar. Con un solo toque, la app envía por WhatsApp un mensaje que parece cualquier receta a una persona de confianza que ya sabe qué significa: *"te necesito ahora"*.
+- **La receta es una petición de ayuda disimulada.** Quien agrede o controla puede revisar su celular, y ella no puede escribir "ayuda" ni llamar. La app prepara un mensaje que parece una conversación cotidiana sobre una receta; ella revisa el texto, elige a una persona de confianza y decide si abrir WhatsApp para enviarlo. Por el acuerdo previo, el mensaje significa: *"te necesito ahora"*.
 - **Un acuerdo previo, en persona, define qué hacer y qué no.** No es para ocultarle algo al contacto, sino para que sepa responder sin ponerse en riesgo ni delatarla.
 - **Se ve como un recetario normal.** Búsqueda, categorías, favoritas y fichas de receta. No hay botones ni textos de emergencia a la vista.
 - **Configuración de una sola vez**, con explicación clara, un botón de **Salir rápido** y un acceso discreto para volver a cambiar sus datos.

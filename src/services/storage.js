@@ -17,6 +17,10 @@ function readJSON(key, fallback) {
   }
 }
 
+function normalizeRecipeId(id) {
+  return id === 'aguadito' ? 'caldo-gallina' : id;
+}
+
 export function loadSettings() {
   let favorites = readJSON(KEYS.favorites, null);
   let profile = readJSON(KEYS.profile, null);
@@ -36,7 +40,9 @@ export function loadSettings() {
     };
   }
   return {
-    favorites: Array.isArray(favorites) ? favorites.filter((id) => typeof id === 'string') : [],
+    favorites: Array.isArray(favorites)
+      ? favorites.filter((id) => typeof id === 'string').map(normalizeRecipeId)
+      : [],
     setupCompleted,
     hasPriorUse,
     preferences: {
@@ -48,7 +54,7 @@ export function loadSettings() {
       name: typeof preferences?.name === 'string' ? preferences.name.trim().slice(0, 40) : ''
     },
     profile: {
-      trustedRecipeId: typeof profile?.trustedRecipeId === 'string' ? profile.trustedRecipeId : null,
+      trustedRecipeId: typeof profile?.trustedRecipeId === 'string' ? normalizeRecipeId(profile.trustedRecipeId) : null,
       contacts: Array.isArray(profile?.contacts)
         ? profile.contacts
           .map((contact) => validateContact(contact ?? {}))

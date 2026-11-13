@@ -11,6 +11,30 @@
 .wellbeing-back-button { min-width: 44px; min-height: 44px; padding: 4px 0; border: 0; color: var(--accent); background: transparent; font-weight: 650; text-align: left; }
 .empty-state { padding: 22px 12px; color: var(--muted); text-align: center; line-height: 1.55; }
 .share-preview { white-space: pre-wrap; overflow-wrap: anywhere; padding: 12px; border-radius: 12px; background: var(--accent-soft); }
+.icon { width: 20px; height: 20px; flex: 0 0 auto; }
+.recipe-meta { display: flex; align-items: center; gap: 7px; margin: 0 0 14px; color: var(--muted); font-size: .88rem; }
+.recipe-meta .icon { width: 17px; height: 17px; }
+.share-recipe-summary { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.share-recipe-summary img { width: 58px; height: 58px; flex: 0 0 58px; border-radius: 12px; object-fit: cover; }
+.share-recipe-summary > span { display: grid; gap: 4px; min-width: 0; }
+.share-recipe-summary strong { font-size: 1rem; }
+.share-recipe-summary small { color: var(--muted); font-size: .8rem; }
+.share-message-card { margin: 12px 0; padding: 13px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--accent-soft); }
+.share-message-label { display: flex; align-items: center; gap: 7px; margin: 0; color: var(--accent); font-size: .8rem; font-weight: 700; }
+.share-message-label .icon { width: 17px; height: 17px; }
+.share-message-card .share-preview { margin: 9px 0 0; padding: 0; background: transparent; line-height: 1.5; }
+.share-section-title { margin: 17px 0 8px; font-size: .95rem; }
+.share-recipient-list { display: grid; gap: 8px; margin-bottom: 12px; }
+.share-recipient { display: flex; width: 100%; min-height: 60px; align-items: center; gap: 11px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 14px; color: var(--ink); background: var(--card); text-align: left; text-decoration: none; }
+.share-recipient:hover { border-color: var(--accent); }
+.share-recipient-icon { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 12px; color: var(--accent); background: var(--accent-soft); }
+.share-recipient-copy { display: grid; flex: 1; gap: 3px; min-width: 0; }
+.share-recipient-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.share-recipient-copy small { color: var(--muted); font-size: .78rem; }
+.share-recipient > .icon:last-child { width: 18px; height: 18px; color: var(--muted); }
+.share-recipient-note { display: flex; align-items: center; gap: 9px; margin: 10px 0; color: var(--muted); font-size: .88rem; }
+.share-recipient-note .icon { color: var(--accent); }
+.share-open-button { display: flex; gap: 8px; margin-top: 9px; }
 .error-text { min-height: 1.4em; color: #a52c3b; font-size: .86rem; }
 .chat-disclaimer { margin: 9px 0 0; }
 .demo-message { padding: 13px; border-radius: 15px; background: #e7ddcb; }

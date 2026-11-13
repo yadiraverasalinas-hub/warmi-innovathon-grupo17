@@ -41,7 +41,7 @@
   Hecho cuando: hay enlace público con HTTPS; `base` correcto; workflow en verde; el service worker sube versión de caché.
 
 - [ ] **T11. Validar textos y acuerdo con Makipuray** (P-1, P-2, P-3, P-5) · Área: docs y pitch · Issue: #__ · Dueña: __
-  Hecho cuando: la mentora revisó el mensaje de la señal (el actual dice "ven a probarla" e invita a ir), las pautas de `docs/ACUERDO-DE-CONFIANZA.md`, el contenido de Bienestar y los teléfonos; los cambios están anotados en la spec y, si cambia el mensaje, existe un issue para ajustarlo en `services/sharing.js`.
+  Hecho cuando: la mentora revisó el texto provisional actual (que no invita a acudir), las pautas de `docs/ACUERDO-DE-CONFIANZA.md`, el contenido de Bienestar y los teléfonos; los cambios están anotados en la spec y cualquier ajuste posterior al mensaje se gestiona mediante un issue antes de modificar `services/sharing.js`.
 
 ## Día 3 · Sábado 14
 

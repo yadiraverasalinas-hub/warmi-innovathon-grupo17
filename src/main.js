@@ -5,10 +5,11 @@ import { recipes } from './data/recipes.js';
 import { appState, resetTransientState } from './state/appState.js';
 import { loadSettings, markSetupCompleted, saveFavorites, saveProfile, savePreferences, clearAppData } from './services/storage.js';
 import { getCurrentLocation } from './services/geolocation.js';
-import { contactMessageURL, shareRecipe } from './services/sharing.js';
+import { contactMessageText, contactMessageURL, shareRecipe } from './services/sharing.js';
 import { renderMap, destroyMap } from './services/map.js';
 import { renderNavigation } from './components/navigation.js';
 import { renderModal } from './components/modal.js';
+import { renderIcon } from './components/icons.js';
 import { showToast } from './components/toast.js';
 import { renderHome } from './views/home.js';
 import { renderSearch, renderSearchResults } from './views/search.js';
@@ -79,7 +80,7 @@ function renderSettings() {
       </button>
     </div>
     <button class="button secondary" type="button" data-action="clear-favorites">Limpiar favoritas</button>
-    <button class="button secondary theme-toggle" type="button" data-action="toggle-theme" aria-label="${isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}">${isDark ? '☀️' : '🌙'}</button>
+    <button class="button secondary theme-toggle" type="button" data-action="toggle-theme" aria-label="${isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}">${renderIcon(isDark ? 'sun' : 'moon')}</button>
     ${deferredInstallPrompt ? '<button class="button secondary" type="button" data-action="install-app">Instalar aplicación</button>' : '<p class="note">Para instalar: usa la opción del navegador “Añadir a pantalla de inicio”, si está disponible.</p>'}
   </div>`;
   return renderModal('Preferencias', content);
@@ -237,11 +238,10 @@ async function prepareLocationShare(contactIndex) {
   try {
     const location = await getCurrentLocation();
     const trusted = appState.profile.trustedRecipeId === recipe.id;
-    const message = trusted
-      ? `Te paso la receta de mi ${recipe.name.toLowerCase()}, ven a probarla.\nhttps://maps.google.com/?q=${location.latitude},${location.longitude}`
-      : `Te comparto esta receta: ${recipe.name}.\nhttps://maps.google.com/?q=${location.latitude},${location.longitude}`;
+    const message = contactMessageText(recipe, trusted, location);
     appState.shareDraft = {
       recipeId: recipe.id,
+      mode: 'location',
       contactName: contact.name,
       message,
       url: contactMessageURL(contact, recipe, trusted, location)
@@ -391,11 +391,17 @@ async function handleClick(event) {
       }
       break;
     }
-    case 'share-recipe': {
+    case 'open-share':
+      if (!recipes.some((recipe) => recipe.id === target.dataset.id)) break;
+      appState.shareDraft = { recipeId: target.dataset.id, mode: 'recipe' };
+      renderApp();
+      break;
+    case 'share-native': {
       const recipe = recipes.find((item) => item.id === target.dataset.id);
       if (!recipe) break;
+      const trusted = appState.profile.trustedRecipeId === recipe.id;
       try {
-        await shareRecipe(recipe);
+        await shareRecipe(recipe, contactMessageText(recipe, trusted));
         showToast(navigator.share ? 'Se abrió el menú para compartir.' : 'Texto copiado.');
       } catch (error) {
         if (error.name === 'AbortError') {
@@ -408,7 +414,7 @@ async function handleClick(event) {
       break;
     }
     case 'prepare-location-share':
-      appState.shareDraft = { recipeId: target.dataset.id };
+      appState.shareDraft = { recipeId: target.dataset.id, mode: 'location' };
       renderApp();
       break;
     case 'share-location-to-contact':

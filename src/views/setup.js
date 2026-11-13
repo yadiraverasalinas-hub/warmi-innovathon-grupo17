@@ -1,4 +1,5 @@
 import { recipes } from '../data/recipes.js';
+import { renderIcon } from '../components/icons.js';
 import { escapeHTML } from '../utils/security.js';
 
 function localPhone(phone) {
@@ -13,14 +14,14 @@ export function renderSetup(state) {
   if (step === 0) {
     content = `<h2>Bienvenida a Recetario Casero</h2>
       <div class="setup-tips" aria-label="Información importante">
-        <p class="setup-tip"><span aria-hidden="true">🍲</span><strong>Tu receta es una señal secreta.</strong></p>
-        <p class="setup-tip"><span aria-hidden="true">🤝</span><span><strong>Compártela con alguien de confianza y sabrá que necesitas ayuda.</strong> Acuerden antes qué significa.</span></p>
-        <p class="setup-tip"><span aria-hidden="true">🔒</span><span><strong>No llama a emergencias ni te vigila.</strong> Tú decides cada envío.</span></p>
+        <p class="setup-tip"><span class="setup-tip-icon">${renderIcon('pot')}</span><strong>Tu receta es una señal secreta.</strong></p>
+        <p class="setup-tip"><span class="setup-tip-icon">${renderIcon('users')}</span><span><strong>Compártela con alguien de confianza y sabrá que necesitas ayuda.</strong> Acuerden antes qué significa.</span></p>
+        <p class="setup-tip"><span class="setup-tip-icon">${renderIcon('eyeOff')}</span><span><strong>No llama a emergencias ni te vigila.</strong> Tú decides cada envío.</span></p>
       </div>
       <details class="setup-more"><summary>Saber más</summary><p>La app no envía mensajes en segundo plano. Tu ubicación solo se añade si eliges esa opción; podrás revisar el mensaje antes de abrir WhatsApp y decidir si lo envías.</p></details>
       <p>Elige tu receta de confianza:</p>
       ${recipes.map((recipe) => `<button class="setup-choice ${state.setupRecipeId === recipe.id ? 'selected' : ''}" type="button" data-action="select-trusted-recipe" data-id="${escapeHTML(recipe.id)}">
-        <img src="${escapeHTML(recipe.image)}" alt=""><span>${escapeHTML(recipe.name)}</span><span aria-hidden="true">${state.setupRecipeId === recipe.id ? '♥' : '♡'}</span>
+        <img src="${escapeHTML(recipe.image)}" alt="" loading="lazy" decoding="async"><span>${escapeHTML(recipe.name)}</span><span aria-hidden="true">${state.setupRecipeId === recipe.id ? '♥' : '♡'}</span>
       </button>`).join('')}
       ${state.setupFromSecret ? '<div class="action-row"><a class="button secondary" href="#demo">Ver tutorial</a><button class="button secondary" type="button" data-action="clear-app-data">Borrar todos mis datos</button></div>' : ''}`;
   } else if (step === 1) {

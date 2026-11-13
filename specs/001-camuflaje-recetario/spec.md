@@ -13,7 +13,7 @@
 
 ## Propuesta de valor
 
-No es una app de emergencia: es un recetario que sigue siendo un recetario. **La receta es una petición de ayuda disimulada.** Con un toque, la usuaria envía a una persona de confianza un mensaje que parece cualquier receta y que, por un acuerdo previo, significa *"te necesito ahora"*. La receta no le esconde nada al contacto: le esconde la petición a quien la vigila. Además, dentro del mismo recetario encuentra orientación y teléfonos de apoyo en Perú.
+No es una app de emergencia: es un recetario que sigue siendo un recetario. **La receta es una petición de ayuda disimulada.** La app prepara un mensaje que parece una conversación cotidiana sobre una receta; la usuaria revisa el texto y elige explícitamente a una persona de confianza antes de abrir WhatsApp. Por un acuerdo previo, ese mensaje significa *"te necesito ahora"*. La receta no le esconde nada al contacto: le esconde la petición a quien la vigila. Además, dentro del mismo recetario encuentra orientación y teléfonos de apoyo en Perú.
 
 **Por qué hace falta si el contacto ya sabe su situación:** el contacto puede saber que ella está en riesgo en general, pero no *cuándo* necesita ayuda ahora, y ella no puede escribir "ayuda" ni llamar sin delatarse. La app resuelve el *cuándo* y el *cómo*, no el *qué*: el acuerdo previo define qué hacer y qué no hacer.
 
@@ -22,7 +22,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 1. **Acuerdo previo, en persona** (idealmente con una facilitadora de Makipuray): qué significa la receta, qué hará y qué **no** hará la persona de confianza, y cómo responder sin ponerse en riesgo. Ver `docs/ACUERDO-DE-CONFIANZA.md`.
 2. **Configuración única:** elige su receta de confianza y anota 2 o 3 personas de confianza.
 3. **Uso normal:** el recetario se ve como cualquier otro.
-4. **Petición de ayuda:** comparte la receta de confianza por WhatsApp con un toque (revisa el mensaje antes de enviar; puede sumar su ubicación si decide).
+4. **Petición de ayuda:** abre la vista previa de la receta, revisa el mensaje y elige a la persona de confianza antes de abrir WhatsApp; puede sumar su ubicación si lo decide.
 5. **Orientación:** desde Preferencias abre el apartado claramente identificado «Bienestar y apoyo», donde encuentra artículos breves, teléfonos de apoyo y un asistente de respuestas predefinidas. Bienestar no aparece en la navegación principal.
 
 ## Requisitos (formato EARS)
@@ -31,8 +31,8 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 
 - **RF-1:** CUANDO la usuaria abre la app, EL SISTEMA muestra un recetario completo: inicio, búsqueda por nombre y categoría, y ficha de cada receta.
 - **RF-2:** CUANDO marca una receta como favorita, EL SISTEMA la guarda en el dispositivo y la muestra en Favoritas.
-- **RF-3:** CUANDO comparte una receta que no es la de confianza, EL SISTEMA comparte un mensaje común de receta (compartir del dispositivo o copiar).
-- **RF-4 (señal):** CUANDO comparte su receta de confianza con una persona de confianza, EL SISTEMA prepara un mensaje de WhatsApp con apariencia de invitación a comer y **lo muestra para que ella lo revise** antes de abrir WhatsApp.
+- **RF-3:** CUANDO comparte una receta que no es la de confianza, EL SISTEMA presenta un mensaje común de receta y permite compartirlo desde el dispositivo o copiarlo.
+- **RF-4 (señal):** CUANDO comparte una receta, EL SISTEMA presenta una vista previa del mensaje y del destinatario antes de abrir WhatsApp. Para la receta de confianza, el texto suena a conversación cotidiana sobre una receta y **no invita ni indica que la persona de confianza acuda a ningún lugar o confronte a alguien**. WhatsApp solo se abre cuando la usuaria elige explícitamente ese destinatario.
 - **RF-5 (ubicación):** CUANDO la usuaria elige explícitamente incluir su ubicación, EL SISTEMA solicita el permiso del navegador y agrega un enlace de mapa al mensaje. EL SISTEMA no guarda la ubicación ni la comparte en segundo plano.
 - **RF-6:** CUANDO la usuaria abre «Bienestar y apoyo» desde Preferencias, EL SISTEMA muestra los artículos breves de apoyo y teléfonos útiles en Perú que se pueden tocar para llamar.
 - **RF-7:** CUANDO la usuaria escribe al asistente palabras de riesgo (miedo, violencia, amenaza, etc.), EL SISTEMA responde con apoyo y los teléfonos de ayuda. EL SISTEMA aclara que es un asistente de respuestas predefinidas y no guarda la conversación.
@@ -75,7 +75,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 
 | RF | Prueba | Cómo |
 |---|---|---|
-| RF-4 | El mensaje de la receta de confianza sale con el texto acordado y el teléfono con prefijo 51 | Unitaria |
+| RF-4 | La vista previa muestra destinatario y texto antes de abrir WhatsApp; el texto de confianza no invita a acudir; cada persona abre el chat con su número correcto | Manual + unitaria |
 | RF-5 | Sin acción explícita no se pide ubicación; con ella el enlace se agrega al mensaje | Unitaria + manual |
 | RF-10 | Tras borrar, no queda ninguna clave de la app salvo la marca de "ya configurada" | Unitaria |
 | RF-11 | Con almacenamiento vacío, al abrir "/" aparece la configuración con las tres tarjetas | Manual |
@@ -90,7 +90,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 ## Preguntas abiertas
 
 - **P-1:** ¿El acceso secundario a «Bienestar y apoyo» desde Preferencias reduce suficientemente las pistas casuales sin dificultar encontrar orientación? Validar con la mentora de Makipuray y con usuarias antes de considerar el cambio validado. La app no es invisible: quien explore Preferencias puede encontrar este acceso.
-- **P-2:** ¿El texto exacto del mensaje es creíble y seguro? El texto actual (*"Te paso la receta de mi …, ven a probarla"*) **invita a ir**, lo que contradice la regla de no pedir que acuda. Evaluar una redacción neutra que no pida ir a ningún lado. Validar con Makipuray.
+- **P-2:** ¿El texto exacto del mensaje es creíble y seguro? Se propone provisionalmente: *"Te paso la receta de mi … . Luego me cuentas cómo te quedó."* No invita a la persona a ir a una casa ni a otro lugar. Validar esta redacción con Makipuray antes de usarla con usuarias reales.
 - **P-5:** ¿Una señal o dos? Una receta podría significar "escríbeme cuando puedas" y otra "urgente". Se deja como mejora futura.
 - **P-3:** ¿Los teléfonos de apoyo mostrados siguen vigentes? Confirmar en fuentes oficiales antes de la demo.
 - **P-4:** ¿Se publica el repositorio de forma abierta o privada hasta la entrega? (El gesto de reapertura quedaría documentado.)
