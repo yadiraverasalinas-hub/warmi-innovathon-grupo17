@@ -1,11 +1,15 @@
-const CACHE_NAME = 'recetario-casero-v6';
+const CACHE_NAME = 'recetario-casero-v8';
 const APP_ROOT = new URL('./', self.location).href;
 const MANIFEST_URL = new URL('./manifest.webmanifest', self.location).href;
 const STATIC_URLS = [
   MANIFEST_URL,
-  new URL('./icons/icon-192.png', self.location).href,
-  new URL('./icons/icon-512.png', self.location).href,
-  new URL('./icons/icon.svg', self.location).href,
+  ...[
+    'icono-app-discreto-192.png',
+    'icono-app-discreto-512.png',
+    'icono-app-discreto.svg',
+    'logo-fusion-512.png',
+    'logo-fusion.svg'
+  ].map((name) => new URL(`./icons/${name}`, self.location).href),
   ...['aji.jpg', 'arroz.jpg', 'causa.jpg', 'lomo.jpg', 'caldo-gallina.jpg', 'chaufa.jpg', 'ceviche.jpg', 'mazamorra-morada.jpg']
     .map((name) => new URL(`./images/${name}`, self.location).href)
 ];
@@ -57,7 +61,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   event.respondWith(
-    caches.match(request).then((cached) => {
+    caches.match(request, { ignoreVary: true }).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
         if (response.ok) {
