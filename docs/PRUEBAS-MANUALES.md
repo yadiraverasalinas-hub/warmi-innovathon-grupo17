@@ -30,13 +30,39 @@ Dispositivo: __ · Navegador: __ · Fecha: __ · Quién probó: __
 - [ ] Las tarjetas de configuración muestran iconos SVG morados y legibles en ambos temas
 - [ ] Arroz chaufa, ceviche, mazamorra morada y caldo de gallina aparecen con sus imágenes en configuración y recetario; todas las fotos de recetas son JPG
 
+## Modo apoyo con PIN (RF-25, RF-26, RF-29)
+
+- [ ] Sin PIN, la navegación solo tiene Inicio, Buscar y Favoritas (no Tiendas ni Bienestar)
+- [ ] Sin PIN, la ficha de la receta de confianza no muestra el aviso «receta de confianza»
+- [ ] Sin PIN, «Compartir receta» ofrece solo el menú del dispositivo: sin contactos, sin «Incluir mi ubicación» y con el mensaje común
+- [ ] Sin PIN, el temporizador es de cocina común y no menciona ubicación ni mensajes
+- [ ] En la calculadora, escribir precios actualiza «Total aproximado» y «Por porción» sin perder el foco; ajustar porciones recalcula el costo por porción
+- [ ] Un PIN incorrecto no confirma ni abre nada
+- [ ] El PIN correcto lleva al inicio del recetario con Tiendas, Bienestar y «Salir» visibles; el PIN no queda escrito en la calculadora
+- [ ] En modo apoyo, Tiendas muestra los puntos de ejemplo no verificados y Bienestar muestra artículos, teléfonos y asistente
+- [ ] En modo apoyo, «Compartir receta» ofrece contactos y «Incluir mi ubicación actual»
+- [ ] 60 segundos sin tocar la pantalla: vuelve al inicio, desaparecen Tiendas/Bienestar y hay que poner el PIN otra vez
+- [ ] Cambiar de app o bloquear la pantalla en modo apoyo también lo cierra
+- [ ] «Salir» cierra el modo apoyo en un toque
+
+## Aviso de llegada (RF-27, RF-28)
+
+- [ ] En modo apoyo, iniciar el temporizador con un destino pide la ubicación una sola vez y muestra la barra «Temporizador» con «Detener»
+- [ ] Esperar 60 segundos sin tocar: el modo apoyo se cierra pero el temporizador sigue en marcha
+- [ ] Al vencer (con la app abierta) aparece «¿Ya está lista?» sin textos de ayuda ni ubicación
+- [ ] «Compartir receta» muestra el mensaje en clave con destino y enlace de ubicación y los contactos; no se abre WhatsApp hasta tocar un contacto
+- [ ] Nada se envía solo en ningún paso
+- [ ] «Ya está lista» o cerrar el aviso borra la ubicación y el destino; «Detener» también
+- [ ] Bloquear el celular antes de que venza: anotar si el aviso aparece al volver (no se promete como alerta confiable)
+- [ ] Denegar el permiso de ubicación al iniciar: el temporizador arranca igual y el mensaje sale sin enlace de ubicación
+
 ## Actualización, borrado e inactividad (RF-16, RF-20)
 
 - [ ] Desde apoyo, "Actualizar contactos o PIN" precarga los datos existentes y permite guardarlos
 - [ ] "Borrar mis datos guardados" limpia contactos, PIN, preferencias y favoritas, vuelve al recetario y no vuelve a abrir la configuración
 - [ ] Dejar la configuración sin tocar 60 segundos vuelve al recetario
 - [ ] Dejar Preferencias sin tocar 60 segundos cierra el diálogo y vuelve al inicio
-- [ ] Dejar Bienestar y apoyo sin tocar 60 segundos vuelve al inicio y descarta el chat
+- [ ] Dejar el modo apoyo (Bienestar, Tiendas o cualquier pantalla) sin tocar 60 segundos vuelve al inicio, desactiva el modo apoyo y descarta el chat
 
 ## Contactos (RF-18)
 

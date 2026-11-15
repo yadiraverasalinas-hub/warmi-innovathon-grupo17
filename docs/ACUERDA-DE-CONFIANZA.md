@@ -27,6 +27,7 @@ La receta no le esconde nada a tu persona de confianza: le esconde tu petición 
 - Si te envías la ubicación, usarla **solo como información**.
 - Si hay peligro inmediato, **contactar a los servicios de ayuda locales** (los teléfonos están en el área de apoyo de la app, que se abre desde la calculadora con el PIN creado durante la configuración).
 - Seguir lo que ustedes acordaron aquí, aunque el mensaje sea corto.
+- Si el mensaje menciona un negocio, ve a ese lugar y reúnete con ella allí; no vayas a su casa ni enfrentes a nadie. Si no puedes ir, llama a la Línea 100 o a la Policía (105).
 
 ## 4. Qué **NO** hará tu persona de confianza
 

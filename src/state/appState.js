@@ -23,7 +23,9 @@ export const appState = {
   portionInput: '',
   portionResults: null,
   timerDeadline: null,
-  timerRecipeId: null
+  timerRecipeId: null,
+  checkin: null,
+  costs: { recipeId: null, values: [] }
 };
 
 export function resetTransientState() {
@@ -47,4 +49,6 @@ export function resetTransientState() {
   appState.portionResults = null;
   appState.timerDeadline = null;
   appState.timerRecipeId = null;
+  appState.checkin = null;
+  appState.costs = { recipeId: null, values: [] };
 }

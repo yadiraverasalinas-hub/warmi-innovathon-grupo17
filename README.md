@@ -19,11 +19,12 @@ Si quien la agrede o la controla revisa su celular, escribir "ayuda" o abrir una
 
 - **La receta es una petición de ayuda disimulada.** Quien agrede o controla puede revisar su celular, y ella no puede escribir "ayuda" ni llamar. La app prepara un mensaje que parece una conversación cotidiana sobre una receta; ella revisa el texto, elige a una persona de confianza y decide si abrir WhatsApp para enviarlo. Por el acuerdo previo, el mensaje significa: *"te necesito ahora"*.
 - **Un acuerdo previo, en persona, define qué hacer y qué no.** No es para ocultarle algo al contacto, sino para que sepa responder sin ponerse en riesgo ni delatarla.
-- **Se ve como un recetario normal.** Búsqueda, categorías, favoritas y fichas de receta. No hay botones ni textos de emergencia a la vista.
+- **Se ve como un recetario normal.** Búsqueda, categorías, favoritas y fichas de receta. Sin el PIN no hay botones, pestañas ni textos de emergencia a la vista: tampoco Tiendas, contactos, receta de confianza ni ubicación al compartir.
 - **Configuración inicial de una sola vez**, con explicación clara, un botón de **Salir rápido** y creación de un PIN de 6 dígitos. La configuración y los datos pueden actualizarse después de entrar al área de apoyo.
 - **Control total de la usuaria.** Revisa el mensaje antes de enviarlo y la ubicación se comparte solo si ella lo decide, cada vez.
-- **Orientación dentro del mismo recetario:** artículos breves, teléfonos de apoyo en Perú y un asistente de respuestas predefinidas, disponibles desde la calculadora de porciones tras introducir el PIN.
-- **Funciones de cocina útiles:** calculadora de porciones y temporizador. El temporizador puede servir como recordatorio de llegada; al vencer, la usuaria decide si comparte una receta.
+- **Modo apoyo con PIN.** En la calculadora de porciones y costos de cualquier receta, la usuaria escribe su PIN: el recetario se ve igual, pero se habilitan **Tiendas**, **Bienestar** (artículos breves, teléfonos de apoyo en Perú y un asistente de respuestas predefinidas), compartir con contactos y ubicación, y el aviso de llegada. A los 60 segundos sin tocar la pantalla, al ocultar la app o con «Salir», vuelve al recetario y hay que poner el PIN de nuevo.
+- **Funciones de cocina útiles:** calculadora de porciones y **costos de compra** (precio por ingrediente, total aproximado y costo por porción) y temporizador de cocina.
+- **Aviso de llegada (modo apoyo).** Al iniciar el temporizador puede indicar a qué punto se dirige; se consulta su ubicación una vez. Si el tiempo vence sin que ella lo detenga, la app muestra un aviso neutro y, al tocar «Compartir receta», prepara el mensaje con la última ubicación para que lo envíe con un toque. **No se envía solo.**
 - **Pensada para acompañarse "de mano en mano":** una facilitadora puede entregar la app, hacer la configuración junto con la usuaria y explicarle el acuerdo.
 
 ## Cómo probarlo en 2 minutos
@@ -32,8 +33,8 @@ Si quien la agrede o la controla revisa su celular, escribir "ayuda" o abrir una
 2. Verás la **configuración inicial**: tres tarjetas, elige una receta de confianza, anota dos contactos de prueba y crea un PIN de prueba de 6 dígitos. Prueba también **Salir rápido**.
 3. Explora el recetario: no hay pistas de la función de ayuda.
 4. Abre una receta, compártela con tu contacto de prueba y revisa el **mensaje antes de enviarlo**. Prueba incluir la ubicación.
-5. Abre una receta, usa la **Calculadora de porciones** y escribe el PIN en el campo de porciones. Se abrirán los artículos, teléfonos de apoyo y el asistente (*"tengo miedo"*). En esta sección, prueba el cierre por 60 segundos de inactividad.
-6. Inicia el temporizador de cocina y espera su aviso. Elige «Compartir receta» para revisar el mensaje; el envío y la ubicación no son automáticos.
+5. Abre una receta, usa la **Calculadora de porciones y costos** (escribe precios y mira el total) y escribe el PIN en el campo de porciones. El recetario se ve igual pero aparecen **Tiendas**, **Bienestar** y «Salir». Prueba el asistente (*"tengo miedo"*) y el cierre por 60 segundos de inactividad: vuelve al recetario y las funciones desaparecen.
+6. En modo apoyo, abre una receta, elige un destino y un tiempo de 1 minuto, y espera el aviso. Toca «Compartir receta» para revisar el mensaje con la ubicación; el envío no es automático. Prueba también el temporizador de cocina sin PIN: no ofrece contactos ni ubicación.
 7. Instálala desde el navegador ("Añadir a pantalla de inicio") y ábrela sin conexión.
 
 > Usa **solo datos de prueba**. El PIN no cifra los datos ni protege contra quien inspeccione el navegador o el dispositivo.
@@ -51,7 +52,7 @@ Generen el QR localmente desde el navegador o con una herramienta sin seguimient
 - El PIN no se puede recuperar en este prototipo. Si se olvida, borrar los datos del navegador también elimina contactos y preferencias guardados.
 - No se añade un directorio de psicólogas con datos sin verificar; cualquier servicio de orientación debe validarse con la organización correspondiente antes de publicarse.
 - Para volver a la configuración y gestionar el PIN o los contactos, toca cinco veces el título del recetario en menos de tres segundos. Este acceso discreto no es una protección de seguridad.
-- El temporizador requiere que la app siga abierta y no manda una alerta confiable al cerrarse o suspenderse. Cuando vence, solo muestra un aviso y la usuaria decide si comparte algo.
+- El temporizador y el aviso de llegada requieren que la app siga abierta y no mandan una alerta confiable al cerrarse o suspenderse (un celular bloqueado puede detener la página). Cuando vence, solo muestra un aviso y la usuaria decide si comparte algo: **la app no puede enviar mensajes por sí sola**; eso exigiría un servidor o SMS.
 - **Discreta no es invisible.** Alguien con acceso al celular podría abrirla o revisar lo guardado en el navegador.
 - El mensaje enviado **queda en el historial de WhatsApp**; recomendamos activar mensajes temporales en ese chat o borrarlo.
 - Los puntos del mapa son **ejemplos no verificados**; no son lugares seguros.
@@ -61,7 +62,7 @@ Generen el QR localmente desde el navegador o con una herramienta sin seguimient
 ## Privacidad
 
 - Favoritas, contactos y preferencias se guardan **solo en el dispositivo** (almacenamiento local del navegador). No hay servidor ni cuentas.
-- La ubicación se pide **solo tras una acción explícita**; no se guarda ni se comparte en segundo plano.
+- La ubicación se pide **solo tras una acción explícita** (compartir con ubicación o iniciar el aviso de llegada); nunca se guarda en el dispositivo y se conserva en memoria solo mientras el aviso está activo.
 - El PIN se guarda como verificación derivada con sal en el almacenamiento local; no se guarda el PIN en texto claro ni se envía a un servidor.
 - "Borrar mis datos" elimina lo guardado por esta app.
 - Sin analítica ni rastreadores. El modo sin conexión guarda solo los recursos de la propia app.

@@ -18,9 +18,21 @@ export async function shareRecipe(recipe, text = contactMessageText(recipe, fals
   await navigator.clipboard.writeText(text);
 }
 
-export function contactMessageURL(contact, recipe, trusted, location = null) {
-  const message = contactMessageText(recipe, trusted, location);
+export function whatsappURL(contact, message) {
   const digits = contact.phone.replace(/\D/g, '');
   const phone = digits.length === 9 ? `51${digits}` : digits;
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
+
+export function contactMessageURL(contact, recipe, trusted, location = null) {
+  return whatsappURL(contact, contactMessageText(recipe, trusted, location));
+}
+
+// Aviso por tiempo de llegada (RF-27): mensaje de la receta de confianza con el destino
+// y la última ubicación disponible. La redacción está pendiente de validar (P-2, P-9).
+export function checkinMessageText(recipe, location = null, destination = '') {
+  const lines = [contactMessageText(recipe, true)];
+  if (destination) lines.push(`Iba camino a ${destination}.`);
+  if (location) lines.push(mapsLink(location));
+  return lines.join('\n');
 }

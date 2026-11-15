@@ -5,6 +5,8 @@ import { recipes } from './data/recipes.js';
 import { appState, resetTransientState } from './state/appState.js';
 import { loadSettings, markSetupCompleted, saveFavorites, saveProfile, savePreferences, saveSupportPin, verifySupportPin, clearAppData } from './services/storage.js';
 import { getCurrentLocation } from './services/geolocation.js';
+import { safePoints } from './data/safePoints.js';
+import { costPerServing, formatSoles, sanitizeCostInput, sumCosts } from './utils/costs.js';
 import { contactMessageText, contactMessageURL, shareRecipe } from './services/sharing.js';
 import { renderMap, destroyMap } from './services/map.js';
 import { renderNavigation } from './components/navigation.js';
@@ -90,6 +92,9 @@ function renderApp() {
     return;
   }
 
+  const unlocked = appState.supportUnlocked;
+  if (!unlocked && (appState.tab === 'shop' || appState.tab === 'well')) appState.tab = 'home';
+
   let title = appState.recipeId
     ? ['Receta', '']
     : (titles[appState.tab] ?? titles.home);
@@ -107,7 +112,7 @@ function renderApp() {
     }[appState.tab] ?? (() => renderHome(appState)))();
   let modal = appState.modal === 'settings' ? renderSettings() : '';
   if (appState.modal === 'timer-reminder') {
-    modal = renderModal('¿Ya está lista?', `<p>El temporizador terminó. Si todavía necesitas compartir algo, puedes revisar una receta y decidir qué hacer.</p>
+    modal = renderModal('¿Ya está lista?', `<p>El temporizador terminó.</p>
       <button class="button full" type="button" data-action="timer-done">Ya está lista</button>
       <button class="button secondary full share-open-button" type="button" data-action="timer-share">Compartir receta</button>`);
   }
@@ -115,10 +120,14 @@ function renderApp() {
   const header = appState.tab === 'well'
     ? '<header class="wellbeing-backbar"><button class="button quick-exit" type="button" data-action="quick-exit"><span aria-hidden="true">↗</span> Salir rápido</button></header>'
     : `<header class="topbar"><div><h1${appState.tab === 'home' && !appState.recipeId ? ' data-action="secret-setup"' : ''}>${escapeHTML(title[0])}</h1>${title[1] ? `<p>${escapeHTML(title[1])}</p>` : ''}</div>
-      <button class="icon-button" type="button" data-action="open-settings" aria-label="Preferencias">⚙</button>
+      <div class="topbar-actions">${unlocked ? '<button class="button quick-exit compact" type="button" data-action="quick-exit"><span aria-hidden="true">↗</span> Salir</button>' : ''}
+        <button class="icon-button" type="button" data-action="open-settings" aria-label="Preferencias">⚙</button></div>
     </header>`;
+  const timerBar = appState.timerDeadline
+    ? `<div class="timer-bar"><span>⏱ Temporizador <strong class="timer-countdown" role="timer">${formatCountdown()}</strong></span><button class="button secondary" type="button" data-action="timer-stop">Detener</button></div>`
+    : '';
 
-  root.innerHTML = `${header}${content}${appState.tab === 'well' ? '' : renderNavigation(appState.tab)}${modal}`;
+  root.innerHTML = `${header}${timerBar}${content}${renderNavigation(appState.tab, unlocked)}${modal}`;
 
   if (appState.tab === 'shop' && !appState.recipeId) {
     try {
@@ -153,7 +162,21 @@ function navigateToApp() {
   renderApp();
 }
 
-function returnToRecipes() {
+function formatCountdown() {
+  const seconds = Math.max(0, Math.ceil((appState.timerDeadline - Date.now()) / 1000));
+  return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
+// Hay un aviso por tiempo de llegada esperando a la usuaria (RF-27, RF-28).
+function reminderPending() {
+  return Boolean(appState.checkin)
+    && (appState.modal === 'timer-reminder' || appState.shareDraft?.mode === 'checkin');
+}
+
+function returnToRecipes(options = {}) {
+  const keepReminder = Boolean(options.keepReminder)
+    && appState.modal === 'timer-reminder'
+    && Boolean(appState.checkin);
   try {
     markSetupCompleted();
   } catch (error) {
@@ -167,7 +190,7 @@ function returnToRecipes() {
   appState.category = 'Todas';
   appState.query = '';
   appState.selectedPoint = null;
-  appState.modal = null;
+  appState.modal = keepReminder ? 'timer-reminder' : null;
   appState.chat = [];
   appState.supportUnlocked = false;
   appState.location = null;
@@ -180,6 +203,10 @@ function returnToRecipes() {
   appState.setupPinConfirm = '';
   appState.portionInput = '';
   appState.portionResults = null;
+  appState.costs = { recipeId: null, values: [] };
+  // Un temporizador en marcha sobrevive al cierre del modo apoyo (RF-28); si no hay
+  // temporizador ni aviso pendiente, se descartan la ubicación y el destino.
+  if (!appState.timerDeadline && !keepReminder) appState.checkin = null;
   history.replaceState(null, '', `${location.pathname}${location.search}`);
   renderApp();
   if (!document.hidden) window.scrollTo(0, 0);
@@ -190,13 +217,14 @@ function isAtRecipeHome() {
     && appState.tab === 'home'
     && !appState.recipeId
     && !appState.modal
-    && !appState.shareDraft;
+    && !appState.shareDraft
+    && !appState.supportUnlocked;
 }
 
 function handleVisibilityChange() {
   if (document.hidden) {
-    if (!isAtRecipeHome()) returnToRecipes();
-  } else if (appState.modal === 'timer-reminder') {
+    if (!isAtRecipeHome()) returnToRecipes({ keepReminder: true });
+  } else if (appState.modal === 'timer-reminder' && !appState.checkin) {
     returnToRecipes();
   }
 }
@@ -246,6 +274,7 @@ function toggleFavorite(id) {
 }
 
 async function prepareLocationShare(contactIndex) {
+  if (!appState.supportUnlocked) return;
   const recipe = recipes.find((item) => item.id === appState.shareDraft?.recipeId);
   const contact = appState.profile.contacts[contactIndex];
   if (!recipe || !contact) {
@@ -304,6 +333,7 @@ async function handleClick(event) {
 
   switch (action) {
     case 'navigate':
+      if ((target.dataset.tab === 'shop' || target.dataset.tab === 'well') && !appState.supportUnlocked) break;
       if (appState.tab === 'shop' && target.dataset.tab !== 'shop') appState.location = null;
       appState.tab = target.dataset.tab;
       appState.recipeId = null;
@@ -365,6 +395,7 @@ async function handleClick(event) {
       appState.recipeId = target.dataset.id;
       appState.portionInput = String(recipes.find((recipe) => recipe.id === target.dataset.id).servings);
       appState.portionResults = null;
+      if (appState.costs.recipeId !== target.dataset.id) appState.costs = { recipeId: target.dataset.id, values: [] };
       appState.modal = 'portion-calculator';
       renderApp();
       document.querySelector('#portion-count')?.focus();
@@ -373,19 +404,35 @@ async function handleClick(event) {
       appState.modal = null;
       appState.timerDeadline = null;
       appState.timerRecipeId = null;
+      appState.checkin = null;
       renderApp();
       break;
-    case 'timer-share':
-      if (!recipes.some((recipe) => recipe.id === appState.timerRecipeId)) break;
-      appState.recipeId = appState.timerRecipeId;
-      appState.shareDraft = { recipeId: appState.timerRecipeId, mode: 'recipe' };
+    case 'timer-stop':
+      appState.timerDeadline = null;
+      appState.timerRecipeId = null;
+      appState.checkin = null;
+      renderApp();
+      break;
+    case 'timer-share': {
+      // Con un aviso por tiempo de llegada armado (RF-27) se comparte la receta de
+      // confianza con la última ubicación; si no, es un compartir de receta común.
+      const armed = Boolean(appState.checkin);
+      const trustedId = appState.profile.trustedRecipeId;
+      const recipeId = armed && recipes.some((recipe) => recipe.id === trustedId)
+        ? trustedId
+        : appState.timerRecipeId;
+      if (!recipes.some((recipe) => recipe.id === recipeId)) break;
+      appState.recipeId = recipeId;
+      appState.shareDraft = { recipeId, mode: armed ? 'checkin' : 'recipe' };
       appState.modal = null;
       appState.timerRecipeId = null;
       renderApp();
       break;
+    }
     case 'close-modal':
       appState.modal = null;
       appState.shareDraft = null;
+      if (!appState.timerDeadline) appState.checkin = null;
       renderApp();
       break;
     case 'clear-app-data':
@@ -442,7 +489,7 @@ async function handleClick(event) {
     case 'share-native': {
       const recipe = recipes.find((item) => item.id === target.dataset.id);
       if (!recipe) break;
-      const trusted = appState.profile.trustedRecipeId === recipe.id;
+      const trusted = appState.supportUnlocked && appState.profile.trustedRecipeId === recipe.id;
       try {
         await shareRecipe(recipe, contactMessageText(recipe, trusted));
         showToast(navigator.share ? 'Se abrió el menú para compartir.' : 'Texto copiado.');
@@ -457,13 +504,16 @@ async function handleClick(event) {
       break;
     }
     case 'prepare-location-share':
+      if (!appState.supportUnlocked) break;
       appState.shareDraft = { recipeId: target.dataset.id, mode: 'location' };
       renderApp();
       break;
     case 'share-location-to-contact':
+      if (!appState.supportUnlocked) break;
       await prepareLocationShare(Number(target.dataset.contactIndex));
       break;
     case 'request-location':
+      if (!appState.supportUnlocked) break;
       try {
         appState.location = await getCurrentLocation();
         showToast('Ubicación actualizada solo en este dispositivo.');
@@ -578,6 +628,14 @@ root.addEventListener('input', (event) => {
     const results = document.querySelector('#search-results');
     if (results) results.innerHTML = renderSearchResults(appState);
   }
+  if (target.matches('[data-cost-input]')) {
+    const recipeId = appState.recipeId;
+    const clean = sanitizeCostInput(target.value);
+    target.value = clean;
+    if (appState.costs.recipeId !== recipeId) appState.costs = { recipeId, values: [] };
+    appState.costs.values[Number(target.dataset.costInput)] = clean;
+    updateCostSummary();
+  }
   if (target.matches('[data-contact-name]')) {
     appState.setupContacts[Number(target.dataset.contactName)].name = target.value;
   }
@@ -647,11 +705,15 @@ root.addEventListener('submit', async (event) => {
       try {
         const valid = await verifySupportPin(raw);
         if (valid) {
-          appState.tab = 'well';
+          // Modo apoyo (RF-25): el mismo recetario, con las funciones de ayuda habilitadas.
+          appState.tab = 'home';
           appState.recipeId = null;
           appState.modal = null;
           appState.shareDraft = null;
           appState.chat = [];
+          appState.portionInput = '';
+          appState.portionResults = null;
+          appState.costs = { recipeId: null, values: [] };
           appState.supportUnlocked = true;
           lastSensitiveActivity = Date.now();
           renderApp();
@@ -677,8 +739,34 @@ root.addEventListener('submit', async (event) => {
     }
     appState.timerDeadline = Date.now() + minutes * 60 * 1000;
     appState.timerRecipeId = recipeId;
+    appState.checkin = null;
     renderApp();
     showToast('Temporizador iniciado.');
+  }
+  if (event.target.matches('[data-form="arrival-timer"]')) {
+    event.preventDefault();
+    if (!appState.supportUnlocked) return;
+    const form = event.target;
+    const minutes = Number(form.elements.minutes.value);
+    if (!Number.isInteger(minutes) || minutes < 1 || minutes > 180) {
+      showToast('Elige un tiempo entre 1 y 180 minutos.');
+      return;
+    }
+    const destinationIndex = form.elements.destination.value;
+    const destination = destinationIndex === '' ? '' : (safePoints[Number(destinationIndex)]?.name ?? '');
+    // La usuaria acaba de pulsar «Iniciar»: es la acción explícita que autoriza la consulta.
+    showToast('Solicitando tu ubicación actual…');
+    let location = null;
+    try {
+      location = { ...(await getCurrentLocation()), at: Date.now() };
+    } catch (error) {
+      showToast(`${error.message} Se continuará sin ubicación.`);
+    }
+    appState.timerDeadline = Date.now() + minutes * 60 * 1000;
+    appState.timerRecipeId = form.dataset.recipeId;
+    appState.checkin = { destination, location };
+    lastSensitiveActivity = Date.now();
+    renderApp();
   }
   if (event.target.matches('[data-form="chat"]')) {
     event.preventDefault();
@@ -726,9 +814,31 @@ function showPortionResults(recipe, raw) {
   renderApp();
 }
 
+function updateCostSummary() {
+  const summary = document.querySelector('.cost-summary');
+  if (!summary) return;
+  const values = [...document.querySelectorAll('[data-cost-input]')].map((input) => input.value);
+  const total = sumCosts(values);
+  const servings = Number(summary.dataset.servings) || 1;
+  summary.querySelector('[data-cost-total]').textContent = formatSoles(total);
+  summary.querySelector('[data-cost-per]').textContent = formatSoles(costPerServing(total, servings));
+}
+
+// Al vencer el temporizador se intenta actualizar la ubicación. La usuaria la autorizó al
+// iniciarlo (RF-27); si falla, se usa la última ubicación conservada en memoria.
+function refreshCheckinLocation() {
+  getCurrentLocation()
+    .then((location) => {
+      if (!appState.checkin) return;
+      appState.checkin.location = { ...location, at: Date.now() };
+      if (appState.shareDraft?.mode === 'checkin') renderApp();
+    })
+    .catch(() => {});
+}
+
 function isSensitiveScreen() {
   return appState.mode === 'setup'
-    || (appState.mode === 'app' && (appState.tab === 'well' || appState.modal === 'settings'));
+    || (appState.mode === 'app' && (appState.supportUnlocked || appState.modal === 'settings'));
 }
 
 function recordSensitiveActivity() {
@@ -747,7 +857,7 @@ root.addEventListener('change', recordSensitiveActivity);
 window.addEventListener('hashchange', route);
 document.addEventListener('visibilitychange', handleVisibilityChange);
 window.addEventListener('pagehide', () => {
-  if (!isAtRecipeHome()) returnToRecipes();
+  if (!isAtRecipeHome()) returnToRecipes({ keepReminder: true });
 });
 window.addEventListener('pageshow', handleVisibilityChange);
 window.addEventListener('beforeinstallprompt', (event) => {
@@ -759,21 +869,20 @@ window.addEventListener('beforeinstallprompt', (event) => {
 applyPreferences();
 route();
 setInterval(() => {
-  if (isSensitiveScreen() && Date.now() - lastSensitiveActivity >= 60000) {
+  // Cierre por inactividad (RF-20), salvo que haya un aviso de llegada esperando (RF-28).
+  if (isSensitiveScreen() && !reminderPending() && Date.now() - lastSensitiveActivity >= 60000) {
     closeInactiveScreen();
   }
   if (!appState.timerDeadline) return;
   if (appState.timerDeadline <= Date.now()) {
     appState.timerDeadline = null;
     appState.modal = 'timer-reminder';
+    if (appState.checkin) refreshCheckinLocation();
     renderApp();
     return;
   }
-  const countdown = document.querySelector('#timer-countdown');
-  if (countdown) {
-    const seconds = Math.ceil((appState.timerDeadline - Date.now()) / 1000);
-    countdown.textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
-  }
+  const countdown = formatCountdown();
+  document.querySelectorAll('.timer-countdown').forEach((element) => { element.textContent = countdown; });
 }, 1000);
 if (appState.storageError) showToast(appState.storageError);
 

@@ -7,6 +7,21 @@
 .timer-controls .field { width: 92px; margin: 0; }
 .timer-countdown { margin: 10px 0 0; font-variant-numeric: tabular-nums; }
 .timer-panel .note { margin-bottom: 0; }
+.timer-form label + .timer-controls { margin-bottom: 12px; }
+.timer-form select.field { margin: 0; }
+.timer-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 12px; padding: 8px 8px 8px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--accent-soft); font-size: .92rem; }
+.timer-bar .timer-countdown { margin: 0; font-variant-numeric: tabular-nums; }
+.timer-bar .button { min-height: 38px; padding: 6px 14px; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.button.quick-exit.compact { min-height: 38px; padding: 6px 12px; font-size: .85rem; }
+.cost-list { display: grid; gap: 8px; margin: 10px 0; padding: 0; list-style: none; }
+.cost-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cost-list label { flex: 1; font-size: .9rem; line-height: 1.3; }
+.cost-field { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: .85rem; }
+.cost-field .field { width: 92px; margin: 0; text-align: right; }
+.cost-summary { margin-top: 12px; padding: 12px; border-radius: 12px; background: var(--accent-soft); }
+.cost-summary p { margin: 0 0 4px; }
+.cost-summary p:last-child { margin-bottom: 0; }
 .portion-form { display: grid; gap: 8px; }
 .portion-form .field { margin: 0; }
 .portion-results { padding-left: 20px; }

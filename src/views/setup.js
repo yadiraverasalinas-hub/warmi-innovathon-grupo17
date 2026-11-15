@@ -39,7 +39,7 @@ export function renderSetup(state) {
       <p class="note">Si decides compartir una ubicación, el navegador te pedirá permiso y podrás revisar el enlace antes de abrir WhatsApp.</p>`;
   } else if (step === 3) {
     content = `<h2>Crea un PIN</h2>
-      <p>Lo usarás desde la calculadora de porciones para abrir la orientación y los recursos de apoyo.</p>
+      <p>Lo escribirás en la calculadora de una receta para activar las funciones de apoyo. Sin el PIN, la aplicación se ve y funciona solo como recetario.</p>
       <label class="setup-pin-field" for="setup-pin">PIN de 6 dígitos
         <input class="field" id="setup-pin" data-setup-pin type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="new-password" value="${escapeHTML(state.setupPin)}">
       </label>
