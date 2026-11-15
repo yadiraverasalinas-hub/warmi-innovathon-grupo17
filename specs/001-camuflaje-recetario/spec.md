@@ -1,7 +1,7 @@
 # Spec 001: Recetario Casero (Camuflaje)
 
 > Reto Warmi Innovathon · Makipuray · **Eje 3: Prevención y seguridad**
-> Estado: v2 (borrador para el equipo) · Última revisión: 15 nov 2026 · v2: modo apoyo desbloqueado con PIN (RF-25 a RF-29)
+> Estado: v3 (borrador para el equipo) · Última revisión: 15 nov 2026 · v2: modo apoyo desbloqueado con PIN (RF-25 a RF-29) · v3: vibración al vencer y confirmación discreta del PIN (RF-30 a RF-31)
 
 ## Problema y usuaria
 
@@ -19,7 +19,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 
 ## Cómo funciona (visión)
 
-1. **Acuerdo previo, en persona** (idealmente con una facilitadora de Makipuray): qué significa la receta, qué hará y qué **no** hará la persona de confianza, y cómo responder sin ponerse en riesgo. Ver `docs/ACUERDO-DE-CONFIANZA.md`.
+1. **Acuerdo previo, en persona** (idealmente con una facilitadora de Makipuray): qué significa la receta, qué hará y qué **no** hará la persona de confianza, y cómo responder sin ponerse en riesgo. Ver `docs/ACUERDA-DE-CONFIANZA.md`.
 2. **Configuración única:** elige su receta de confianza y anota 2 o 3 personas de confianza.
 3. **Uso normal:** el recetario se ve como cualquier otro.
 4. **Petición de ayuda:** abre la vista previa de la receta, revisa el mensaje y elige a la persona de confianza antes de abrir WhatsApp; puede sumar su ubicación si lo decide.
@@ -57,15 +57,17 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 - **RF-21 (Should):** CUANDO la usuaria inicia un temporizador de cocina desde una receta y la app sigue abierta al vencer, EL SISTEMA muestra un aviso con las opciones «Ya está lista» y «Compartir receta». Fuera del modo apoyo, «Compartir receta» ofrece solo el menú normal del dispositivo, sin contactos ni ubicación. El temporizador no envía nada por sí solo.
 - **RF-22 (Should):** PARA el pitch, EL EQUIPO prepara una tarjeta impresa por ambas caras: una receta del prototipo y un QR verificado que abre la URL pública. La tarjeta no contiene datos personales ni presenta la app como servicio de emergencia.
 - **RF-23 (Must):** CUANDO la usuaria toca cinco veces el título del recetario en un intervalo de tres segundos, EL SISTEMA abre la configuración para gestionar el PIN y los contactos, sin abrir directamente Bienestar y apoyo ni mostrar una pista visible de este acceso.
-- **RF-24 (Must):** CUANDO el navegador informa que la app quedó oculta (por cambio de app/pestaña o bloqueo de pantalla), EL SISTEMA vuelve al inicio del recetario y descarta el contenido temporal de la vista. En Bienestar y apoyo, EL SISTEMA mantiene visible un botón «Salir rápido» para volver al recetario manualmente.
+- **RF-24 (Must):** CUANDO el navegador informa que la app quedó oculta (por cambio de app/pestaña o bloqueo de pantalla), EL SISTEMA vuelve al inicio del recetario y descarta el contenido temporal de la vista. En Bienestar y apoyo, EL SISTEMA mantiene visible un botón «Salir rápido» para volver al recetario manualmente. La excepción es un aviso de llegada que ya venció: se conserva para que la usuaria pueda decidir qué hacer (RF-28).
 
 ### C. v2 · Modo apoyo desbloqueado con PIN
 
 - **RF-25 (Must):** CUANDO la usuaria introduce el PIN correcto en la calculadora, EL SISTEMA activa el **modo apoyo** y muestra el inicio del recetario con la misma apariencia, más: pestañas «Tiendas» y «Bienestar» en la navegación, compartir con contactos guardados, opción de incluir ubicación, aviso por tiempo de llegada (RF-27) y un botón «Salir rápido» en la barra superior. MIENTRAS el modo apoyo no está activo, ninguna de esas funciones se muestra ni se puede abrir por acciones directas. El modo apoyo vive solo en memoria: no se guarda en el dispositivo.
 - **RF-26 (Must):** CUANDO el modo apoyo termina (60 s sin interacción, app oculta, «Salir rápido» o borrado de datos), EL SISTEMA vuelve al recetario sin esas funciones. Para volver a entrar hay que introducir el PIN otra vez.
-- **RF-27 (Should):** CUANDO, en modo apoyo, la usuaria inicia el temporizador con un destino opcional, EL SISTEMA consulta su ubicación una sola vez (acción explícita), la conserva solo en memoria durante la sesión y arranca la cuenta regresiva. SI vence con la app abierta, EL SISTEMA intenta refrescar la ubicación y muestra el aviso neutro «¿Ya está lista?». CUANDO la usuaria toca «Compartir receta», EL SISTEMA muestra el mensaje de la receta de confianza con la última ubicación disponible y los contactos; la usuaria envía desde WhatsApp con un toque. **El sistema no envía nada por sí solo**: un navegador no permite enviar mensajes sin intervención de la usuaria, y el envío automático requeriría un servidor o SMS (mejora futura).
+- **RF-27 (Should):** CUANDO, en modo apoyo, la usuaria inicia el temporizador con un destino opcional, EL SISTEMA consulta su ubicación una vez al inicio (acción explícita), la conserva solo en memoria durante la sesión y arranca la cuenta regresiva. SI vence con la app abierta, EL SISTEMA intenta refrescar la ubicación y muestra el aviso neutro «¿Ya está lista?». CUANDO la usuaria toca «Compartir receta», EL SISTEMA muestra el mensaje de la receta de confianza con la última ubicación disponible y los contactos; la usuaria envía desde WhatsApp con un toque. **El sistema no envía nada por sí solo**: un navegador no permite enviar mensajes sin intervención de la usuaria, y el envío automático requeriría un servidor o SMS (mejora futura).
 - **RF-28 (Must):** CUANDO la usuaria detiene el temporizador («Detener» en la barra del temporizador, «Ya está lista» al vencer) o termina la sesión sin temporizador activo, EL SISTEMA descarta la ubicación y el destino conservados. El temporizador en marcha sobrevive al cierre automático del modo apoyo (RF-26) y el aviso al vencer no se descarta aunque la app se oculte.
 - **RF-29 (Should):** CUANDO la usuaria abre la calculadora en una receta, EL SISTEMA permite escribir el precio de cada ingrediente en soles y muestra el total aproximado y el costo por porción, usando las porciones ajustadas si las hay. Los precios no se guardan.
+- **RF-30 (Should):** CUANDO vence un temporizador con la app abierta, EL SISTEMA intenta una única vibración breve si el navegador y el dispositivo admiten la API de vibración. El aviso visual se muestra siempre y no depende de la vibración.
+- **RF-31 (Should):** CUANDO la usuaria introduce el PIN correcto, EL SISTEMA muestra brevemente el mensaje neutro «Receta especial lista.» y mantiene el título y la apariencia cotidiana del recetario. El mensaje no se guarda ni cambia la navegación.
 
 ## Reglas de seguridad y límites
 
@@ -107,9 +109,11 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 | RF-22 | Escanear el QR impreso desde otro teléfono; abre el MVP público y la URL de respaldo es legible | Manual |
 | RF-23 | Cinco toques rápidos al título abren la configuración; menos de cinco o toques separados no la abren | Manual |
 | RF-25–26 | Sin PIN no hay Tiendas, Bienestar, contactos ni ubicación al compartir; con PIN aparecen; a los 60 s o al ocultar la app desaparecen | Manual |
-| RF-27–28 | Iniciar temporizador en modo apoyo: pide ubicación una vez; al vencer aparece el aviso aunque el modo apoyo ya se haya cerrado; «Compartir receta» muestra mensaje con ubicación; nada se envía hasta confirmar en WhatsApp; «Detener» descarta todo | Manual |
+| RF-27–28 | Iniciar temporizador en modo apoyo: pide ubicación al inicio; al vencer intenta refrescarla y aparece el aviso aunque el modo apoyo ya se haya cerrado; «Compartir receta» muestra mensaje con la última ubicación disponible; nada se envía hasta confirmar en WhatsApp; «Detener» descarta todo | Manual |
 | RF-29 | Escribir precios en la calculadora suma el total y el costo por porción; cambiar porciones recalcula el costo por porción | Manual + unitaria (`utils/costs.js`) |
 | RF-24 | Desde cualquier vista, cambiar de app/pestaña o bloquear la pantalla regresa al inicio al volver; en Bienestar, «Salir rápido» permanece accesible al desplazarse | Manual en móvil; depende de los eventos de ciclo de vida que notifique el navegador |
+| RF-30 | Con la app abierta al vencer, se intenta una sola vibración breve cuando es compatible y siempre aparece el aviso visual | Manual en móvil; la vibración depende del navegador, dispositivo y ajustes del sistema |
+| RF-31 | Un PIN correcto muestra brevemente «Receta especial lista.» sin cambiar el título o apariencia del recetario | Manual |
 
 ## Preguntas abiertas
 

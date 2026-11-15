@@ -60,7 +60,7 @@ function renderTimerPanel(recipe, state) {
         ${safePoints.map((point, index) => `<option value="${index}">${escapeHTML(point.name)} (ejemplo)</option>`).join('')}
       </select>
     </form>
-    <p class="note">Al iniciar se consulta tu ubicación una vez y se conserva solo en esta sesión. Si el tiempo vence, podrás enviar el aviso con un toque; la app no envía nada sola. Si se oculta la app, el aviso puede no aparecer.</p>
+    <p class="note">Al iniciar se consulta tu ubicación y se conserva solo en esta sesión; al vencer se intenta actualizar. Si el tiempo vence, podrás enviar el aviso con un toque; la app no envía nada sola. Si se oculta la app, el aviso puede no aparecer.</p>
   </section>`;
 }
 

@@ -167,6 +167,13 @@ function formatCountdown() {
   return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 }
 
+function vibrateOnce() {
+  if (typeof navigator.vibrate !== 'function') return;
+  if (!navigator.vibrate(200)) {
+    console.info('El navegador o dispositivo no permitió la vibración; se mostrará el aviso visual.');
+  }
+}
+
 // Hay un aviso por tiempo de llegada esperando a la usuaria (RF-27, RF-28).
 function reminderPending() {
   return Boolean(appState.checkin)
@@ -717,6 +724,7 @@ root.addEventListener('submit', async (event) => {
           appState.supportUnlocked = true;
           lastSensitiveActivity = Date.now();
           renderApp();
+          showToast('Receta especial lista.');
           window.scrollTo(0, 0);
           return;
         }
@@ -877,6 +885,7 @@ setInterval(() => {
   if (appState.timerDeadline <= Date.now()) {
     appState.timerDeadline = null;
     appState.modal = 'timer-reminder';
+    vibrateOnce();
     if (appState.checkin) refreshCheckinLocation();
     renderApp();
     return;

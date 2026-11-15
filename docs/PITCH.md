@@ -12,13 +12,13 @@ Inviten al jurado a escanear el QR. Si no puede, abran el enlace público desde 
 
 ## 1:30–2:30 · El recetario
 
-Muestren la búsqueda, una receta y la calculadora de porciones. En la primera configuración, la usuaria elige su receta de confianza, guarda contactos y crea un PIN de 6 dígitos. Después usa el recetario con normalidad. Para acceder a orientación, introduce su PIN en la calculadora; desde allí ve artículos, teléfonos de apoyo y un asistente de respuestas predefinidas.
+Muestren la búsqueda, una receta y la calculadora de porciones. En la primera configuración, la usuaria elige su receta de confianza, guarda contactos y crea un PIN de 6 dígitos. Después usa el recetario con normalidad. Para acceder a orientación, introduce su PIN en la calculadora; aparece brevemente «Receta especial lista.» y, sin cambiar la apariencia del recetario, se habilitan artículos, teléfonos de apoyo y un asistente de respuestas predefinidas.
 
 La receta de confianza prepara un mensaje cotidiano. La usuaria ve el texto y el destinatario antes de abrir WhatsApp. Solo ella confirma el envío. También puede decidir, en ese momento, si incluye su ubicación.
 
 ## 2:30–3:20 · El temporizador
 
-Desde una receta, inicien el temporizador con un tiempo corto para la demostración. Al vencer, el prototipo pregunta «¿Ya está lista?» y ofrece volver a la receta o abrir el flujo normal para compartirla. El mensaje, el contacto y cualquier ubicación requieren una decisión expresa de la usuaria.
+Desde una receta, inicien el temporizador con un tiempo corto para la demostración. Al vencer, el prototipo intenta vibrar una vez si el dispositivo lo admite, pregunta «¿Ya está lista?» y ofrece compartir la receta. El mensaje, el contacto y cualquier ubicación requieren una decisión expresa de la usuaria.
 
 ## 3:20–4:20 · Límites honestos
 

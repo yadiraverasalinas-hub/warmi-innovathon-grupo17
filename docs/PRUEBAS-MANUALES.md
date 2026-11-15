@@ -17,7 +17,7 @@ Dispositivo: __ · Navegador: __ · Fecha: __ · Quién probó: __
 
 ## Recetario y calculadora de porciones (RF-14, RF-17, RF-19)
 
-- [ ] Recorrer Inicio, Buscar, Favoritas y Tiendas: Bienestar no aparece en la navegación principal
+- [ ] Sin PIN, recorrer Inicio, Buscar y Favoritas: Tiendas y Bienestar no aparecen en la navegación principal
 - [ ] Preferencias no muestra Bienestar ni accesos a la configuración
 - [ ] Cinco toques al título del recetario en menos de tres segundos abren la configuración; no abre directamente Bienestar
 - [ ] Cuatro toques, o cinco toques con pausas mayores de tres segundos, no abren la configuración
@@ -38,7 +38,7 @@ Dispositivo: __ · Navegador: __ · Fecha: __ · Quién probó: __
 - [ ] Sin PIN, el temporizador es de cocina común y no menciona ubicación ni mensajes
 - [ ] En la calculadora, escribir precios actualiza «Total aproximado» y «Por porción» sin perder el foco; ajustar porciones recalcula el costo por porción
 - [ ] Un PIN incorrecto no confirma ni abre nada
-- [ ] El PIN correcto lleva al inicio del recetario con Tiendas, Bienestar y «Salir» visibles; el PIN no queda escrito en la calculadora
+- [ ] El PIN correcto lleva al inicio del recetario, muestra brevemente «Receta especial lista.» y habilita Tiendas, Bienestar y «Salir»; el PIN no queda escrito en la calculadora ni cambia el título del recetario
 - [ ] En modo apoyo, Tiendas muestra los puntos de ejemplo no verificados y Bienestar muestra artículos, teléfonos y asistente
 - [ ] En modo apoyo, «Compartir receta» ofrece contactos y «Incluir mi ubicación actual»
 - [ ] 60 segundos sin tocar la pantalla: vuelve al inicio, desaparecen Tiendas/Bienestar y hay que poner el PIN otra vez
@@ -47,7 +47,7 @@ Dispositivo: __ · Navegador: __ · Fecha: __ · Quién probó: __
 
 ## Aviso de llegada (RF-27, RF-28)
 
-- [ ] En modo apoyo, iniciar el temporizador con un destino pide la ubicación una sola vez y muestra la barra «Temporizador» con «Detener»
+- [ ] En modo apoyo, iniciar el temporizador con un destino consulta la ubicación al inicio y muestra la barra «Temporizador» con «Detener»; al vencer intenta actualizarla
 - [ ] Esperar 60 segundos sin tocar: el modo apoyo se cierra pero el temporizador sigue en marcha
 - [ ] Al vencer (con la app abierta) aparece «¿Ya está lista?» sin textos de ayuda ni ubicación
 - [ ] «Compartir receta» muestra el mensaje en clave con destino y enlace de ubicación y los contactos; no se abre WhatsApp hasta tocar un contacto
@@ -91,6 +91,7 @@ Dispositivo: __ · Navegador: __ · Fecha: __ · Quién probó: __
 ## Temporizador y tarjeta QR (RF-21, RF-22)
 
 - [ ] Iniciar temporizador y mantener la app abierta muestra «Ya está lista» y «Compartir receta» al vencer
+- [ ] Al vencer, intenta una sola vibración breve si el navegador/dispositivo la admite; el aviso visual aparece aunque no haya vibración
 - [ ] «Ya está lista» cierra el aviso sin enviar nada
 - [ ] «Compartir receta» abre la vista previa; no se abre WhatsApp hasta elegir contacto y confirmarlo
 - [ ] La ubicación no se solicita automáticamente; solo aparece si se elige expresamente

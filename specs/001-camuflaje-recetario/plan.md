@@ -18,6 +18,8 @@
 | Protección de datos del PIN | PBKDF2-SHA-256 con sal aleatoria mediante Web Crypto; solo se guarda el verificador local | No se guarda el PIN en texto claro ni se envía al servidor; una persona con acceso técnico aún puede inspeccionar la app |
 | Retorno al recetario | 60 segundos sin actividad en vistas sensibles; al quedar oculta la app desde cualquier vista | Vuelve al recetario y limpia el contenido temporal; no borra el perfil |
 | Temporizador/check-in | Temporizador en una ficha de receta; al vencer, aviso y decisión manual de compartir | Una PWA no asegura tareas en segundo plano; nunca se envían mensajes ni ubicaciones automáticamente |
+| Señal al vencer | Intentar una sola vibración breve cuando vence un temporizador con la app abierta; conservar siempre el aviso visual | La API de vibración puede no estar disponible o permitida; no se promete como alerta confiable |
+| Confirmación del PIN | Mostrar brevemente «Receta especial lista.» tras un PIN correcto, sin cambiar el título ni la apariencia del recetario | Confirma el cambio de modo con un texto neutro y efímero |
 | Tarjetas QR | Tarjeta impresa a doble cara para la demostración, QR verificado al MVP | Hace tangible la entrega de la app; el QR dirige solo al recetario público |
 | Claves de storage | No se renombran en este sprint | Evita migraciones con poco tiempo; riesgo documentado abajo |
 
@@ -76,7 +78,7 @@ public/              ← manifest, service-worker, iconos, imágenes
 ### Inactividad y temporizador
 
 - Un minuto sin interacción en configuración, Preferencias o apoyo devuelve al inicio y descarta el chat temporal.
-- Temporizador de 1 a 180 minutos en receta. Al vencer con la app abierta, el aviso ofrece «Ya está lista» o «Compartir receta». La usuaria todavía elige destinatario y confirma en WhatsApp; ubicación sigue siendo opcional y explícita.
+- Temporizador de 1 a 180 minutos en receta. Al vencer con la app abierta, se intenta una vibración breve y el aviso ofrece «Ya está lista» o «Compartir receta». La usuaria todavía elige destinatario y confirma en WhatsApp. En modo apoyo, se consulta ubicación al iniciar y se intenta actualizar al vencer; si no hay permiso, el temporizador sigue y el mensaje queda sin ubicación.
 - Si la app se cierra o suspende, no se garantiza el aviso. No se implementa envío automático ni ubicación en segundo plano.
 
 ### Tarjetas para el pitch
@@ -86,7 +88,7 @@ public/              ← manifest, service-worker, iconos, imágenes
 
 ## Pruebas
 
-- Validar PIN, calculadora, temporizador, auto-cierre, QR, normalización de teléfono y `clearAppData` con pruebas unitarias cuando exista el runner aprobado.
+- Validar PIN, calculadora, temporizador y vibración opcional, mensaje de desbloqueo, auto-cierre, QR, normalización de teléfono y `clearAppData` con pruebas unitarias cuando exista el runner aprobado.
 - **Checklist manual** (`docs/PRUEBAS-MANUALES.md`) en un celular real: alta y migración de PIN, acceso de apoyo, cierre a 60 s, temporizador con y sin app activa, QR, instalar, modo sin conexión, ubicación y WhatsApp.
 - Para la receta de confianza se usa una redacción provisional que no invita a acudir a ningún lugar; validarla con Makipuray antes del uso real (P-2).
 

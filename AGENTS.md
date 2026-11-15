@@ -20,7 +20,7 @@ npm install
 npm run dev        # desarrollo
 npm run build      # producción
 npm run preview    # revisar el build
-npm test           # pruebas (cuando exista la tarea T12)
+npm test           # pruebas (cuando se configure el runner de T12)
 ```
 
 ## Spec-Driven Development
@@ -41,7 +41,8 @@ Esta app puede usarla una persona en peligro. Un error aquí no es solo un bug.
 - **Sin analítica, trackers ni peticiones a terceros** (salvo los enlaces que la usuaria abre a propósito: WhatsApp, mapas).
 - **Sin IA generativa en las respuestas de apoyo.** El asistente usa respuestas predefinidas y revisadas.
 - **El recetario mantiene una apariencia cotidiana (modo apoyo, RF-25).** Sin PIN, la app es solo un recetario: no hay Tiendas ni Bienestar en la navegación, ni contactos, ni receta de confianza, ni ubicación al compartir, ni enlaces a la configuración. La usuaria abre la calculadora de porciones y costos desde una receta e introduce el PIN que creó en la configuración inicial: eso activa el **modo apoyo** (mismo recetario, con Tiendas, Bienestar, compartir con contactos y ubicación, aviso de llegada y «Salir»). Todo acceso a esas funciones debe comprobar `appState.supportUnlocked`, no solo ocultar el botón. El modo apoyo vive solo en memoria y termina tras 60 segundos de inactividad, al ocultar la app o con «Salir». Cinco toques al título del recetario en tres segundos abren solo la configuración para gestionar el PIN y los contactos, nunca el apoyo directamente. El PIN es una barrera de discreción local, no una autenticación segura: alguien con acceso técnico al dispositivo puede inspeccionar o modificar la app.
-- **Los temporizadores no vigilan ni envían por cuenta propia.** El temporizador de cocina y el aviso de llegada (RF-27) solo funcionan mientras la app permanece abierta. En modo apoyo, al iniciar el aviso se consulta la ubicación una vez (la usuaria acaba de pulsar «Iniciar») y se conserva solo en memoria; al vencer se intenta refrescar y la usuaria envía el mensaje con un toque desde WhatsApp. **No se envían mensajes ni ubicaciones automáticamente**: un navegador no puede hacerlo, y el envío automático requeriría un servidor o SMS (mejora futura que debe pasar primero por la spec). Ubicación y destino se descartan al detener o cerrar el aviso.
+- **Los temporizadores no vigilan ni envían por cuenta propia.** El temporizador de cocina y el aviso de llegada (RF-27) solo funcionan mientras la app permanece abierta. Al vencer, el sistema intenta una vibración breve una sola vez si el navegador y el dispositivo la admiten; el aviso visual sigue siendo la señal principal. En modo apoyo, al iniciar el aviso se consulta la ubicación (la usuaria acaba de pulsar «Iniciar») y se conserva solo en memoria; al vencer se intenta refrescar y la usuaria envía el mensaje con un toque desde WhatsApp. **No se envían mensajes ni ubicaciones automáticamente**: un navegador no puede hacerlo, y el envío automático requeriría un servidor o SMS (mejora futura que debe pasar primero por la spec). Ubicación y destino se descartan al detener o cerrar el aviso.
+- **Al desbloquear el modo apoyo**, se muestra solo el toast temporal «Receta especial lista.»; no se cambia el título ni la apariencia cotidiana del recetario.
 - **No renombrar las claves de localStorage** en este sprint (riesgo conocido, ver plan.md).
 - No agregar dependencias sin preguntar. `vitest` (solo desarrollo) está aprobado en el plan.
 
