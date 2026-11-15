@@ -1,4 +1,4 @@
-const CACHE_NAME = 'recetario-casero-v9';
+const CACHE_NAME = 'recetario-casero-v10';
 const APP_ROOT = new URL('./', self.location).href;
 const MANIFEST_URL = new URL('./manifest.webmanifest', self.location).href;
 const STATIC_URLS = [
