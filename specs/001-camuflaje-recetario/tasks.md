@@ -97,6 +97,9 @@
 - [ ] **T27. Confirmación discreta del PIN** (RF-31) · Área: frontend + privacidad · Issue: #__ · Dueña: __
   Hecho cuando: tras validar el PIN aparece brevemente «Receta especial lista.» sin cambiar el título o apariencia del recetario.
 
+- [ ] **T28. Tutorial y simulación de la receta especial** (RF-32) · Área: frontend + privacidad · Issue: #__ · Dueña: __
+  Hecho cuando: el tutorial acompaña acciones reales en Favoritas, receta, calculadora, PIN, Tiendas, Bienestar y compartir; explica que Tiendas muestra ejemplos no verificados, mantiene la tarjeta visible sobre los modales, no avanza sin la acción esperada y termina en la vista previa de compartir con «Terminar» y «Salir», sin abrir WhatsApp ni enviar mensajes.
+
 ## Orden de prioridad
 
 1. **Must:** T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T20, T21, T24, T25 (RF-11 al 20 y RF-23–24)

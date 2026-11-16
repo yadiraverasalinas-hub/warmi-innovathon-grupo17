@@ -1,21 +1,31 @@
-const demoSteps = [
-  'La persona abre Favoritas, entra a su receta de confianza y elige una persona configurada. La acción requiere que ella la inicie.',
-  'WhatsApp se abre con un mensaje preparado. La persona revisa el destinatario y el contenido y decide si lo envía.',
-  'La persona de confianza puede responder o contactar servicios locales si así lo acordaron. La aplicación no contacta a emergencias ni monitorea a nadie.'
-];
+import { escapeHTML } from '../utils/security.js';
+import { tutorialSteps } from '../state/tutorial.js';
 
-export function renderDemo(state) {
-  const step = Math.max(0, Math.min(demoSteps.length - 1, state.demoStep));
-  return `<section aria-labelledby="demo-title">
-    <h2 id="demo-title">Demostración del flujo</h2>
-    <p class="note">Simulación; no representa un envío ni una ubicación real.</p>
-    <div class="demo-message"><p><strong>Vista de mensaje</strong></p><div class="bubble">Te comparto una receta. (contenido de ejemplo)</div></div>
-    <div class="panel" style="margin-top:12px">${demoSteps[step]}</div>
-    <p class="note">Paso ${step + 1} de ${demoSteps.length}</p>
-    <div class="action-row">
-      <button class="button secondary" type="button" data-action="demo-previous" ${step === 0 ? 'disabled' : ''}>Anterior</button>
-      <button class="button" type="button" data-action="demo-next" ${step === demoSteps.length - 1 ? 'disabled' : ''}>Siguiente</button>
-      <a class="button secondary" href="#" data-action="leave-demo">Volver</a>
-    </div>
-  </section>`;
+export function renderTutorialOverlay(state) {
+  const step = tutorialSteps[state.tutorialStep];
+  if (!step) return '';
+
+  const lastStep = state.tutorialStep === tutorialSteps.length - 1;
+  return `<div class="tutorial-overlay" aria-label="Tutorial interactivo">
+    <div class="tutorial-scrim tutorial-scrim-full" aria-hidden="true"></div>
+    <div class="tutorial-scrim tutorial-scrim-top" aria-hidden="true"></div>
+    <div class="tutorial-scrim tutorial-scrim-bottom" aria-hidden="true"></div>
+    <div class="tutorial-scrim tutorial-scrim-left" aria-hidden="true"></div>
+    <div class="tutorial-scrim tutorial-scrim-right" aria-hidden="true"></div>
+    <section class="tutorial-card" data-placement="${step.placement ?? 'bottom'}" role="region" aria-live="polite" aria-labelledby="tutorial-title">
+      <p class="tutorial-progress">${state.tutorialStep + 1} de ${tutorialSteps.length}</p>
+      <h2 id="tutorial-title">${escapeHTML(step.title)}</h2>
+      <p class="tutorial-description">${escapeHTML(step.description)}</p>
+      ${lastStep ? '<p class="tutorial-complete-note">La práctica terminó sin enviar mensajes.</p>' : ''}
+      <div class="tutorial-controls">
+        <button class="button secondary" type="button" data-action="tutorial-exit">Salir</button>
+        <button class="button secondary" type="button" data-action="tutorial-previous" ${state.tutorialStep === 0 ? 'disabled' : ''}>Anterior</button>
+        ${lastStep
+          ? '<button class="button" type="button" data-action="tutorial-finish">Terminar</button>'
+          : step.action === 'tutorial-continue'
+            ? '<button class="button" type="button" data-action="tutorial-continue">Continuar</button>'
+            : '<p class="tutorial-hint">Realiza la acción resaltada para continuar.</p>'}
+      </div>
+    </section>
+  </div>`;
 }

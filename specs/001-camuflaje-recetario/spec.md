@@ -68,6 +68,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 - **RF-29 (Should):** CUANDO la usuaria abre la calculadora en una receta, EL SISTEMA permite escribir el precio de cada ingrediente en soles y muestra el total aproximado y el costo por porción, usando las porciones ajustadas si las hay. Los precios no se guardan.
 - **RF-30 (Should):** CUANDO vence un temporizador con la app abierta, EL SISTEMA intenta una única vibración breve si el navegador y el dispositivo admiten la API de vibración. El aviso visual se muestra siempre y no depende de la vibración.
 - **RF-31 (Should):** CUANDO la usuaria introduce el PIN correcto, EL SISTEMA muestra brevemente el mensaje neutro «Receta especial lista.» y mantiene el título y la apariencia cotidiana del recetario. El mensaje no se guarda ni cambia la navegación.
+- **RF-32 (Should):** CUANDO la usuaria elige «Guardar y practicar el tutorial» al finalizar la configuración, EL SISTEMA guarda esa configuración y guía sobre la interfaz real: abrir Favoritas y la receta elegida, usar la calculadora con el PIN, consultar Tiendas y Bienestar, y practicar el compartir y elegir destinatario. Cada paso de acción avanza solo al detectar la acción correspondiente; las aclaraciones informativas requieren «Continuar» y «Anterior» restaura la vista previa. Los puntos de Tiendas se explican como ejemplos no verificados. Al elegir un destinatario durante el tutorial, EL SISTEMA bloquea el enlace externo y conserva la vista previa para mostrar el final de la práctica sin abrir WhatsApp, pedir ubicación ni enviar mensajes. La pantalla final ofrece «Terminar» y «Salir».
 
 ## Reglas de seguridad y límites
 
@@ -114,6 +115,7 @@ No es una app de emergencia: es un recetario que sigue siendo un recetario. **La
 | RF-24 | Desde cualquier vista, cambiar de app/pestaña o bloquear la pantalla regresa al inicio al volver; en Bienestar, «Salir rápido» permanece accesible al desplazarse | Manual en móvil; depende de los eventos de ciclo de vida que notifique el navegador |
 | RF-30 | Con la app abierta al vencer, se intenta una sola vibración breve cuando es compatible y siempre aparece el aviso visual | Manual en móvil; la vibración depende del navegador, dispositivo y ajustes del sistema |
 | RF-31 | Un PIN correcto muestra brevemente «Receta especial lista.» sin cambiar el título o apariencia del recetario | Manual |
+| RF-32 | Al iniciar el tutorial se guarda la configuración; Favoritas, receta, calculadora, PIN, Tiendas, Bienestar, compartir y destinatario requieren interacción real; las aclaraciones informativas se continúan explícitamente; la tarjeta permanece visible sobre los modales y el final queda en la vista previa de compartir sin abrir WhatsApp ni enviar mensajes | Manual + unitaria |
 
 ## Preguntas abiertas
 

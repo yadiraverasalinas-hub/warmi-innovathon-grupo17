@@ -14,13 +14,17 @@ function renderContactLink(contact, href) {
   </a>`;
 }
 
+function renderRecipeModal(state, title, content) {
+  return renderModal(title, content, 'Cerrar', !state.tutorialActive);
+}
+
 function renderCalculator(recipe, state, portionResults) {
   const ingredients = portionResults ? portionResults.ingredients : recipe.ingredients;
   const servings = portionResults ? portionResults.servings : recipe.servings;
   const values = state.costs?.recipeId === recipe.id ? state.costs.values : [];
   const total = sumCosts(ingredients.map((_, index) => values[index] ?? ''));
 
-  return renderModal('Calculadora de porciones y costos', `<p>La receta rinde ${recipe.servings} porciones. Indica cuántas necesitas para ajustar las cantidades.</p>
+  return renderRecipeModal(state, 'Calculadora de porciones y costos', `<p>La receta rinde ${recipe.servings} porciones. Indica cuántas necesitas para ajustar las cantidades.</p>
     <form class="portion-form" data-form="portion-calculator" data-recipe-id="${escapeHTML(recipe.id)}">
       <label for="portion-count">Porciones deseadas</label>
       <input class="field" id="portion-count" name="servings" type="text" inputmode="numeric" pattern="[0-9]{1,6}" maxlength="6" value="${escapeHTML(state.portionInput || String(recipe.servings))}" required>
@@ -81,7 +85,7 @@ export function renderRecipeDetail(state) {
   }
   if (shareDraft?.mode === 'checkin') {
     const message = checkinMessageText(recipe, state.checkin?.location, state.checkin?.destination);
-    modal = renderModal('Compartir receta', `<div class="share-recipe-summary">
+    modal = renderRecipeModal(state, 'Compartir receta', `<div class="share-recipe-summary">
         <img src="${escapeHTML(recipe.image)}" alt="">
         <span><strong>${escapeHTML(recipe.name)}</strong><small>${escapeHTML(recipe.time)} · ${recipe.servings} porciones</small></span>
       </div>
@@ -91,12 +95,12 @@ export function renderRecipeDetail(state) {
         ? `<h3 class="share-section-title">Enviar por WhatsApp a</h3><div class="share-recipient-list">${state.profile.contacts.map((contact) => renderContactLink(contact, whatsappURL(contact, message))).join('')}</div>`
         : ''}`);
   } else if (shareDraft?.mode === 'location' && shareDraft.url && unlocked) {
-    modal = renderModal('Revisa el mensaje', `<p class="note">Comprueba el destinatario y el enlace de ubicación antes de abrir WhatsApp.</p>
+    modal = renderRecipeModal(state, 'Revisa el mensaje', `<p class="note">Comprueba el destinatario y el enlace de ubicación antes de abrir WhatsApp.</p>
       <div class="share-recipient-note">${renderIcon('message')}<span>WhatsApp para <strong>${escapeHTML(shareDraft.contactName)}</strong></span></div>
       <div class="share-message-card"><p class="share-message-label">Mensaje</p><p class="share-preview">${escapeHTML(shareDraft.message)}</p></div>
       <a class="button full share-open-button" href="${escapeHTML(shareDraft.url)}" target="_blank" rel="noopener noreferrer">${renderIcon('message')} Abrir WhatsApp</a>`);
   } else if (shareDraft?.mode === 'location' && unlocked) {
-    modal = renderModal('Compartir con ubicación', `<p class="note">Elige el destinatario. Solo entonces se solicitará tu ubicación actual; podrás revisar el mensaje antes de abrir WhatsApp.</p>
+    modal = renderRecipeModal(state, 'Compartir con ubicación', `<p class="note">Elige el destinatario. Solo entonces se solicitará tu ubicación actual; podrás revisar el mensaje antes de abrir WhatsApp.</p>
       <div class="share-recipient-list">${contacts.map((contact, index) => `<button class="share-recipient" type="button" data-action="share-location-to-contact" data-contact-index="${index}">
         <span class="share-recipient-icon">${renderIcon('message')}</span>
         <span class="share-recipient-copy"><strong>${escapeHTML(contact.name)}</strong><small>Continuar para añadir ubicación</small></span>
@@ -104,7 +108,7 @@ export function renderRecipeDetail(state) {
       </button>`).join('')}</div>`);
   } else if (shareDraft?.mode === 'recipe') {
     const message = contactMessageText(recipe, isTrustedRecipe);
-    modal = renderModal('Compartir receta', `<div class="share-recipe-summary">
+    modal = renderRecipeModal(state, 'Compartir receta', `<div class="share-recipe-summary">
         <img src="${escapeHTML(recipe.image)}" alt="">
         <span><strong>${escapeHTML(recipe.name)}</strong><small>${escapeHTML(recipe.time)} · ${recipe.servings} porciones</small></span>
       </div>

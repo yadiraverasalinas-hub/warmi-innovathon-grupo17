@@ -20,6 +20,8 @@ import { renderRecipeDetail } from './views/recipeDetail.js';
 import { renderSafePoints } from './views/safePoints.js';
 import { renderWellbeing } from './views/wellbeing.js';
 import { renderSetup } from './views/setup.js';
+import { renderTutorialOverlay } from './views/demo.js';
+import { advanceTutorial, getTutorialTargetSelector, previousTutorialStep, snapshotTutorialView } from './state/tutorial.js';
 import { escapeHTML } from './utils/security.js';
 import { validateContacts } from './utils/validation.js';
 
@@ -85,7 +87,73 @@ function applyPreferences() {
   document.documentElement.dataset.fontSize = appState.preferences.fontSize;
 }
 
+function positionTutorialSpotlight() {
+  const selector = getTutorialTargetSelector(appState);
+  const targets = selector ? [...root.querySelectorAll(selector)] : [];
+  const card = root.querySelector('.tutorial-card');
+  const fullScrim = root.querySelector('.tutorial-scrim-full');
+  const [topScrim, bottomScrim, leftScrim, rightScrim] = [
+    '.tutorial-scrim-top',
+    '.tutorial-scrim-bottom',
+    '.tutorial-scrim-left',
+    '.tutorial-scrim-right'
+  ].map((className) => root.querySelector(className));
+  if (!card) return;
+  card.classList.remove('tutorial-card-top', 'tutorial-card-bottom');
+  if (!targets.length) {
+    fullScrim.hidden = false;
+    [topScrim, bottomScrim, leftScrim, rightScrim].forEach((scrim) => { scrim.hidden = true; });
+    card.classList.add(card.dataset.placement === 'top' ? 'tutorial-card-top' : 'tutorial-card-bottom');
+    return;
+  }
+
+  fullScrim.hidden = true;
+  const getBounds = () => {
+    const rects = targets.map((target) => target.getBoundingClientRect());
+    return {
+      left: Math.min(...rects.map((rect) => rect.left)),
+      top: Math.min(...rects.map((rect) => rect.top)),
+      right: Math.max(...rects.map((rect) => rect.right)),
+      bottom: Math.max(...rects.map((rect) => rect.bottom))
+    };
+  };
+  let bounds = getBounds();
+  if (bounds.top < 0 || bounds.bottom > window.innerHeight) {
+    const target = bounds.top < 0 ? targets[0] : targets[targets.length - 1];
+    target.scrollIntoView({
+      block: 'center',
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    });
+    bounds = getBounds();
+  }
+  targets.forEach((target) => target.classList.add('tutorial-highlight'));
+  targets[0].focus?.({ preventScroll: true });
+
+  const padding = 10;
+  const viewportWidth = document.documentElement.clientWidth;
+  const viewportHeight = window.innerHeight;
+  const left = Math.max(0, bounds.left - padding);
+  const top = Math.max(0, bounds.top - padding);
+  const right = Math.min(viewportWidth, bounds.right + padding);
+  const bottom = Math.min(viewportHeight, bounds.bottom + padding);
+  const positionScrim = (scrim, x, y, width, height) => {
+    scrim.hidden = width <= 0 || height <= 0;
+    scrim.style.left = `${x}px`;
+    scrim.style.top = `${y}px`;
+    scrim.style.width = `${width}px`;
+    scrim.style.height = `${height}px`;
+  };
+  positionScrim(topScrim, 0, 0, viewportWidth, top);
+  positionScrim(bottomScrim, 0, bottom, viewportWidth, viewportHeight - bottom);
+  positionScrim(leftScrim, 0, top, left, bottom - top);
+  positionScrim(rightScrim, right, top, viewportWidth - right, bottom - top);
+
+  const centerY = (bounds.top + bounds.bottom) / 2;
+  card.classList.add(centerY > viewportHeight * 0.55 ? 'tutorial-card-top' : 'tutorial-card-bottom');
+}
+
 function renderApp() {
+  root.classList.toggle('tutorial-active', appState.tutorialActive);
   if (appState.mode === 'setup') {
     root.innerHTML = renderSetup(appState);
     destroyMap();
@@ -127,7 +195,18 @@ function renderApp() {
     ? `<div class="timer-bar"><span>⏱ Temporizador <strong class="timer-countdown" role="timer">${formatCountdown()}</strong></span><button class="button secondary" type="button" data-action="timer-stop">Detener</button></div>`
     : '';
 
-  root.innerHTML = `${header}${timerBar}${content}${renderNavigation(appState.tab, unlocked)}${modal}`;
+  const tutorial = appState.tutorialActive ? renderTutorialOverlay(appState) : '';
+  root.innerHTML = `${header}${timerBar}${content}${renderNavigation(appState.tab, unlocked)}${modal}${tutorial}`;
+
+  if (appState.tutorialActive) {
+    positionTutorialSpotlight();
+    const recipeImage = root.querySelector('.recipe-detail-image');
+    if (recipeImage && !recipeImage.complete) {
+      const repositionSpotlight = () => window.requestAnimationFrame(positionTutorialSpotlight);
+      recipeImage.addEventListener('load', repositionSpotlight, { once: true });
+      recipeImage.addEventListener('error', repositionSpotlight, { once: true });
+    }
+  }
 
   if (appState.tab === 'shop' && !appState.recipeId) {
     try {
@@ -146,13 +225,16 @@ function renderApp() {
   }
 }
 
-function navigateToApp() {
+function navigateToApp({ startTutorial = false } = {}) {
   initialSetupRequired = false;
   appState.mode = 'app';
   appState.supportUnlocked = false;
   appState.modal = null;
   appState.shareDraft = null;
   appState.setupStep = 0;
+  appState.tutorialActive = startTutorial;
+  appState.tutorialStep = 0;
+  appState.tutorialHistory = [];
   appState.setupRecipeId = null;
   appState.setupContacts = [{ name: '', phone: '' }, { name: '', phone: '' }];
   appState.setupError = '';
@@ -203,6 +285,9 @@ function returnToRecipes(options = {}) {
   appState.location = null;
   appState.shareDraft = null;
   appState.setupStep = 0;
+  appState.tutorialActive = false;
+  appState.tutorialStep = 0;
+  appState.tutorialHistory = [];
   appState.setupRecipeId = null;
   appState.setupContacts = [{ name: '', phone: '' }, { name: '', phone: '' }];
   appState.setupError = '';
@@ -225,7 +310,8 @@ function isAtRecipeHome() {
     && !appState.recipeId
     && !appState.modal
     && !appState.shareDraft
-    && !appState.supportUnlocked;
+    && !appState.supportUnlocked
+    && !appState.tutorialActive;
 }
 
 function handleVisibilityChange() {
@@ -238,6 +324,9 @@ function handleVisibilityChange() {
 
 function startSetup() {
   appState.setupStep = 0;
+  appState.tutorialActive = false;
+  appState.tutorialStep = 0;
+  appState.tutorialHistory = [];
   appState.setupRecipeId = appState.profile.trustedRecipeId;
   const contactCount = Math.max(2, Math.min(3, appState.profile.contacts.length));
   appState.setupContacts = [...appState.profile.contacts, ...Array.from(
@@ -247,6 +336,27 @@ function startSetup() {
   appState.setupError = '';
   appState.setupPin = '';
   appState.setupPinConfirm = '';
+}
+
+async function completeSetup(startTutorial = false) {
+  try {
+    appState.profile = {
+      trustedRecipeId: appState.setupRecipeId,
+      contacts: appState.setupContacts.filter((contact) => contact.name.trim() && contact.phone.trim())
+    };
+    saveProfile(appState.profile);
+    await saveSupportPin(appState.setupPin);
+    const favorites = [...new Set([appState.profile.trustedRecipeId, ...appState.favorites].filter(Boolean))];
+    saveFavorites(favorites);
+    markSetupCompleted();
+    appState.favorites = favorites;
+    appState.tab = 'home';
+    navigateToApp({ startTutorial });
+    if (startTutorial) lastSensitiveActivity = Date.now();
+  } catch (error) {
+    console.error(error);
+    showToast(error.message);
+  }
 }
 
 function route() {
@@ -281,7 +391,7 @@ function toggleFavorite(id) {
 }
 
 async function prepareLocationShare(contactIndex) {
-  if (!appState.supportUnlocked) return;
+  if (!appState.supportUnlocked || appState.tutorialActive) return;
   const recipe = recipes.find((item) => item.id === appState.shareDraft?.recipeId);
   const contact = appState.profile.contacts[contactIndex];
   if (!recipe || !contact) {
@@ -328,6 +438,17 @@ function answerAssistant(text) {
 }
 
 async function handleClick(event) {
+  const tutorialSnapshot = appState.tutorialActive ? snapshotTutorialView(appState) : null;
+  const clickedLink = event.target.closest('a[href]');
+  if (appState.tutorialActive && clickedLink) {
+    event.preventDefault();
+    if (clickedLink.matches('a.share-recipient[href^="https://wa.me/"]')
+      && advanceTutorial(appState, 'recipient-selected', {}, tutorialSnapshot)) {
+      renderApp();
+    }
+    return;
+  }
+
   const target = event.target.closest('[data-action]');
   if (!target) return;
   const action = target.dataset.action;
@@ -348,12 +469,14 @@ async function handleClick(event) {
       appState.modal = null;
       appState.shareDraft = null;
       if (appState.tab !== 'well') appState.chat = [];
+      advanceTutorial(appState, 'navigate', { tab: target.dataset.tab }, tutorialSnapshot);
       renderApp();
       window.scrollTo(0, 0);
       break;
     case 'open-recipe':
       appState.recipeId = target.dataset.id;
       appState.shareDraft = null;
+      advanceTutorial(appState, 'open-recipe', { id: target.dataset.id }, tutorialSnapshot);
       renderApp();
       window.scrollTo(0, 0);
       break;
@@ -383,6 +506,10 @@ async function handleClick(event) {
       }
       break;
     case 'toggle-favorite':
+      if (appState.tutorialActive && target.dataset.id === appState.profile.trustedRecipeId) {
+        showToast('La receta elegida debe permanecer en Favoritas durante la práctica.');
+        break;
+      }
       toggleFavorite(target.dataset.id);
       break;
     case 'open-settings':
@@ -404,6 +531,7 @@ async function handleClick(event) {
       appState.portionResults = null;
       if (appState.costs.recipeId !== target.dataset.id) appState.costs = { recipeId: target.dataset.id, values: [] };
       appState.modal = 'portion-calculator';
+      advanceTutorial(appState, 'open-portion-calculator', { id: target.dataset.id }, tutorialSnapshot);
       renderApp();
       document.querySelector('#portion-count')?.focus();
       break;
@@ -437,6 +565,10 @@ async function handleClick(event) {
       break;
     }
     case 'close-modal':
+      if (appState.tutorialActive && previousTutorialStep(appState)) {
+        renderApp();
+        break;
+      }
       appState.modal = null;
       appState.shareDraft = null;
       if (!appState.timerDeadline) appState.checkin = null;
@@ -491,9 +623,14 @@ async function handleClick(event) {
     case 'open-share':
       if (!recipes.some((recipe) => recipe.id === target.dataset.id)) break;
       appState.shareDraft = { recipeId: target.dataset.id, mode: 'recipe' };
+      advanceTutorial(appState, 'open-share', { id: target.dataset.id }, tutorialSnapshot);
       renderApp();
       break;
     case 'share-native': {
+      if (appState.tutorialActive) {
+        showToast('Durante el tutorial no se abre la hoja para compartir.');
+        break;
+      }
       const recipe = recipes.find((item) => item.id === target.dataset.id);
       if (!recipe) break;
       const trusted = appState.supportUnlocked && appState.profile.trustedRecipeId === recipe.id;
@@ -511,15 +648,27 @@ async function handleClick(event) {
       break;
     }
     case 'prepare-location-share':
+      if (appState.tutorialActive) {
+        showToast('La práctica no consulta ni comparte tu ubicación.');
+        break;
+      }
       if (!appState.supportUnlocked) break;
       appState.shareDraft = { recipeId: target.dataset.id, mode: 'location' };
       renderApp();
       break;
     case 'share-location-to-contact':
+      if (appState.tutorialActive) {
+        showToast('La práctica no consulta ni comparte tu ubicación.');
+        break;
+      }
       if (!appState.supportUnlocked) break;
       await prepareLocationShare(Number(target.dataset.contactIndex));
       break;
     case 'request-location':
+      if (appState.tutorialActive) {
+        showToast('La práctica no consulta tu ubicación.');
+        break;
+      }
       if (!appState.supportUnlocked) break;
       try {
         appState.location = await getCurrentLocation();
@@ -560,6 +709,25 @@ async function handleClick(event) {
       appState.setupError = '';
       renderApp();
       break;
+    case 'setup-tutorial':
+      if (appState.mode !== 'setup' || appState.setupStep !== 4) break;
+      await completeSetup(true);
+      break;
+    case 'tutorial-previous':
+      if (!appState.tutorialActive) break;
+      if (previousTutorialStep(appState)) renderApp();
+      break;
+    case 'tutorial-continue':
+      if (appState.tutorialActive
+        && advanceTutorial(appState, 'tutorial-continue', {}, tutorialSnapshot)) {
+        renderApp();
+      }
+      break;
+    case 'tutorial-exit':
+    case 'tutorial-finish':
+      if (!appState.tutorialActive) break;
+      returnToRecipes();
+      break;
     case 'setup-next':
       if (appState.setupStep === 0 && !recipes.some((recipe) => recipe.id === appState.setupRecipeId)) {
         showToast('Elige una receta para continuar.');
@@ -588,24 +756,7 @@ async function handleClick(event) {
         renderApp();
         break;
       }
-      try {
-        appState.profile = {
-          trustedRecipeId: appState.setupRecipeId,
-          contacts: appState.setupContacts.filter((contact) => contact.name.trim() && contact.phone.trim())
-        };
-        saveProfile(appState.profile);
-        await saveSupportPin(appState.setupPin);
-        const favorites = [...new Set([appState.profile.trustedRecipeId, ...appState.favorites].filter(Boolean))];
-        saveFavorites(favorites);
-        markSetupCompleted();
-        appState.favorites = favorites;
-        appState.tab = 'home';
-        initialSetupRequired = false;
-        navigateToApp();
-      } catch (error) {
-        console.error(error);
-        showToast(error.message);
-      }
+      await completeSetup();
       break;
     case 'quick-exit':
       returnToRecipes();
@@ -698,6 +849,7 @@ root.addEventListener('change', (event) => {
 root.addEventListener('submit', async (event) => {
   if (event.target.matches('[data-form="portion-calculator"]')) {
     event.preventDefault();
+    const tutorialSnapshot = appState.tutorialActive ? snapshotTutorialView(appState) : null;
     const form = event.target;
     const input = form.elements.servings;
     const raw = input.value.trim();
@@ -722,6 +874,7 @@ root.addEventListener('submit', async (event) => {
           appState.portionResults = null;
           appState.costs = { recipeId: null, values: [] };
           appState.supportUnlocked = true;
+          advanceTutorial(appState, 'pin-unlocked', {}, tutorialSnapshot);
           lastSensitiveActivity = Date.now();
           renderApp();
           showToast('Receta especial lista.');
@@ -753,6 +906,10 @@ root.addEventListener('submit', async (event) => {
   }
   if (event.target.matches('[data-form="arrival-timer"]')) {
     event.preventDefault();
+    if (appState.tutorialActive) {
+      showToast('El tutorial no consulta ni comparte tu ubicación.');
+      return;
+    }
     if (!appState.supportUnlocked) return;
     const form = event.target;
     const minutes = Number(form.elements.minutes.value);
@@ -790,6 +947,10 @@ root.addEventListener('submit', async (event) => {
 });
 
 root.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && appState.tutorialActive && appState.modal) {
+    if (previousTutorialStep(appState)) renderApp();
+    return;
+  }
   if (event.key === 'Escape' && (appState.modal || appState.shareDraft)) {
     appState.modal = null;
     appState.shareDraft = null;
@@ -846,6 +1007,7 @@ function refreshCheckinLocation() {
 
 function isSensitiveScreen() {
   return appState.mode === 'setup'
+    || appState.tutorialActive
     || (appState.mode === 'app' && (appState.supportUnlocked || appState.modal === 'settings'));
 }
 

@@ -14,6 +14,9 @@ export const appState = {
   location: null,
   shareDraft: null,
   setupStep: 0,
+  tutorialActive: false,
+  tutorialStep: 0,
+  tutorialHistory: [],
   setupRecipeId: null,
   setupContacts: [{ name: '', phone: '' }, { name: '', phone: '' }],
   setupError: '',
@@ -40,6 +43,9 @@ export function resetTransientState() {
   appState.location = null;
   appState.shareDraft = null;
   appState.setupStep = 0;
+  appState.tutorialActive = false;
+  appState.tutorialStep = 0;
+  appState.tutorialHistory = [];
   appState.setupRecipeId = null;
   appState.setupContacts = [{ name: '', phone: '' }, { name: '', phone: '' }];
   appState.setupError = '';

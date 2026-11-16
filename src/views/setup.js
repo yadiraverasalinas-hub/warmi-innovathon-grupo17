@@ -49,7 +49,9 @@ export function renderSetup(state) {
       <p class="note">No uses un PIN de otra cuenta. Si lo olvidas, el prototipo no puede recuperarlo. Se guarda una verificación derivada con sal; esto no protege contra alguien con acceso técnico al dispositivo.</p>
       <p class="error-text" role="alert">${escapeHTML(state.setupError)}</p>`;
   } else {
-    content = '<h2>¡Listo!</h2><p>Tu recetario está configurado. La ubicación y los mensajes siguen bajo tu decisión; no se envían en segundo plano.</p>';
+    content = `<h2>¡Listo!</h2><p>Al terminar, encontrarás la receta que elegiste en Favoritas. Para activar el modo apoyo, abre esa receta y escribe tu PIN en la calculadora.</p>
+      <p>Al iniciar el tutorial se guardará esta configuración en el dispositivo. Podrás salir cuando quieras; el tutorial no enviará mensajes.</p>
+      <button class="button secondary" type="button" data-action="setup-tutorial">Guardar y practicar el tutorial</button>`;
   }
 
   return `<section class="setup" aria-labelledby="setup-heading">
