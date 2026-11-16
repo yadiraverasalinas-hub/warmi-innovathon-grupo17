@@ -29,7 +29,10 @@ export const appState = {
   timerDeadline: null,
   timerRecipeId: null,
   checkin: null,
-  costs: { recipeId: null, values: [] }
+  costs: { recipeId: null, values: [] },
+  // New onboarding fields
+  onboardingStep: 0,
+  onboardingCompleted: false,
 };
 
 export function resetTransientState() {
@@ -58,4 +61,6 @@ export function resetTransientState() {
   appState.timerRecipeId = null;
   appState.checkin = null;
   appState.costs = { recipeId: null, values: [] };
+  // Reset onboarding transient step but keep completion flag
+  appState.onboardingStep = 0;
 }

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 270" fill="none">
+  <path d="M37 181c0-38 25-63 63-63 14-39 49-58 87-42 33-31 86-17 93 27 33 12 49 43 41 74-11 42-49 57-105 57H96c-38 0-59-18-59-53Z" fill="#F2E2F6"/>
+  <path d="M91 202c20-17 36-16 51-6m87 5c20-25 43-25 62-4" stroke="#C9A6D3" stroke-linecap="round" stroke-width="5"/>
+  <path d="M127 96c-7-21 7-39 27-48m-4 56c-3-17 5-27 19-36" stroke="#D8B9E0" stroke-linecap="round" stroke-width="9"/>
+  <path d="m76 161-20-54c-5-13 12-20 19-8l29 47" fill="#E9B47C"/>
+  <path d="m77 161-18-52c-2-6 4-9 7-3l29 49" stroke="#C78B58" stroke-linecap="round" stroke-width="4"/>
+  <path d="M69 163h48l-4 53c-1 10-9 17-20 17H88c-11 0-18-7-19-17l-3-53h3Z" fill="#FFF8F1"/>
+  <path d="M70 174h44" stroke="#E4D5CF" stroke-width="4"/>
+  <path d="M82 153c-1-16 8-29 17-39m-9 35c1-12 5-20 11-27m-13 26c-9-8-12-17-12-26m28 25c7-8 9-16 8-23" stroke="#709053" stroke-linecap="round" stroke-width="5"/>
+  <path d="M252 144c-2-15 4-31 14-40m-7 39c7-14 16-20 27-23m-33 23c-11-7-16-16-17-28" stroke="#799A5C" stroke-linecap="round" stroke-width="6"/>
+  <path d="M153 122h91v58c0 25-17 42-45 42h-1c-28 0-45-17-45-42v-58Z" fill="#7E4B88"/>
+  <path d="M147 123c0-14 23-25 51-25s51 11 51 25-23 23-51 23-51-9-51-23Z" fill="#9A6AA4"/>
+  <path d="M155 125c10 8 26 12 43 12s33-4 43-12" stroke="#D9B6E0" stroke-width="4"/>
+  <path d="M168 119c0-10 13-17 30-17s30 7 30 17" stroke="#D9B6E0" stroke-width="3"/>
+  <path d="M188 99c0-7 6-12 12-12s12 5 12 12" fill="#744181"/>
+  <path d="M153 149c-20-1-28 6-25 16 3 8 13 10 26 7m91-23c20-1 28 6 25 16-3 8-13 10-26 7" stroke="#7E4B88" stroke-width="8"/>
+  <path d="M202 158c-7-10-22-5-20 7 1 7 10 14 20 21 9-7 18-14 19-21 2-12-12-17-19-7Z" fill="#F8DDE9"/>
+  <path d="M217 205c12 6 21 15 26 28l-87 5c-1-14 10-26 26-32" fill="#FFFDFC"/>
+  <path d="m190 213 47 4m-43 5 38 3m-31 5 27 2" stroke="#D7C6DB" stroke-linecap="round" stroke-width="3"/>
+  <path d="M274 98c-5-7 3-14 10-9 7-5 15 2 10 9l-10 11-10-11Z" fill="#D9B5E4"/>
+  <path d="M100 222c10 6 20 7 31 2" stroke="#E9B47C" stroke-linecap="round" stroke-width="5"/>
+  <ellipse cx="176" cy="244" rx="131" ry="12" fill="#EAD2EF"/>
+</svg>

@@ -7,7 +7,8 @@ const KEYS = {
   theme: 'camuflaje.theme',
   preferences: 'camuflaje.preferences',
   setupCompleted: 'camuflaje.setupCompleted',
-  supportPin: 'camuflaje.portions'
+  supportPin: 'camuflaje.portions',
+  onboardingCompleted: 'camuflaje.onboardingCompleted'
 };
 
 function readJSON(key, fallback) {
@@ -29,6 +30,7 @@ export function loadSettings() {
   const preferences = readJSON(KEYS.preferences, {});
   const savedTheme = localStorage.getItem(KEYS.theme);
   const setupCompleted = readJSON(KEYS.setupCompleted, false) === true;
+  const onboardingCompleted = readJSON(KEYS.onboardingCompleted, false) === true;
   const supportPin = readJSON(KEYS.supportPin, null);
   const hasSupportPin = Boolean(
     supportPin
@@ -52,6 +54,7 @@ export function loadSettings() {
       ? favorites.filter((id) => typeof id === 'string').map(normalizeRecipeId)
       : [],
     setupCompleted,
+    onboardingCompleted,
     hasPriorUse,
     hasSupportPin,
     preferences: {
@@ -74,6 +77,13 @@ export function loadSettings() {
   };
 }
 
+export function markOnboardingCompleted() {
+  try {
+    localStorage.setItem(KEYS.onboardingCompleted, 'true');
+  } catch (error) {
+    throw new Error('No se pudo guardar el estado de onboarding en este dispositivo.', { cause: error });
+  }
+}
 export function markSetupCompleted() {
   try {
     localStorage.setItem(KEYS.setupCompleted, 'true');

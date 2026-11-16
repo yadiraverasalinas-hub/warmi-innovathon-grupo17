@@ -3,7 +3,7 @@ import './assets/styles/components.css';
 import './assets/styles/responsive.css';
 import { recipes } from './data/recipes.js';
 import { appState, resetTransientState } from './state/appState.js';
-import { loadSettings, markSetupCompleted, saveFavorites, saveProfile, savePreferences, saveSupportPin, verifySupportPin, clearAppData } from './services/storage.js';
+import { loadSettings, markSetupCompleted, markOnboardingCompleted, saveFavorites, saveProfile, savePreferences, saveSupportPin, verifySupportPin, clearAppData } from './services/storage.js';
 import { getCurrentLocation } from './services/geolocation.js';
 import { safePoints } from './data/safePoints.js';
 import { costPerServing, formatSoles, sanitizeCostInput, sumCosts } from './utils/costs.js';
@@ -46,6 +46,9 @@ try {
   appState.profile = settings.profile;
   appState.hasSupportPin = settings.hasSupportPin;
   appState.preferences = settings.preferences;
+  appState.onboardingCompleted = settings.onboardingCompleted
+    || settings.setupCompleted
+    || settings.hasPriorUse;
   initialSetupRequired = !settings.setupCompleted && !settings.hasPriorUse;
   if (settings.hasPriorUse && !settings.setupCompleted) markSetupCompleted();
 } catch (error) {
@@ -188,6 +191,10 @@ root.addEventListener('error', () => {
 
 function renderApp() {
   root.classList.toggle('tutorial-active', appState.tutorialActive);
+  root.classList.toggle(
+    'onboarding-active',
+    appState.mode === 'setup' && !appState.onboardingCompleted && appState.onboardingStep < 3
+  );
   if (appState.mode === 'setup') {
     root.innerHTML = renderSetup(appState);
     destroyMap();
@@ -397,7 +404,7 @@ function route() {
   if (initialSetupRequired) {
     if (appState.mode !== 'setup') {
       startSetup();
-      appState.setupStep = 0;
+      if (!appState.onboardingCompleted) appState.setupStep = 0;
     }
     appState.mode = 'setup';
   } else {
@@ -561,21 +568,6 @@ async function handleClick(event) {
       renderApp();
       window.scrollTo(0, 0);
       break;
-    case 'setup-begin':
-      if (appState.mode !== 'setup' || appState.setupStep !== 0) break;
-      appState.setupStep = 1;
-      renderApp();
-      break;
-    case 'setup-skip':
-      if (appState.mode !== 'setup' || appState.setupStep !== 0) break;
-      try {
-        markSetupCompleted();
-        navigateToApp();
-      } catch (error) {
-        console.error(error);
-        showToast(error.message);
-      }
-      break;
     case 'restart-tutorial':
       if (appState.modal !== 'settings') break;
       appState.modal = null;
@@ -585,6 +577,48 @@ async function handleClick(event) {
       lastSensitiveActivity = Date.now();
       renderApp();
       break;
+
+    // Onboarding actions
+    case 'onboarding-next': {
+      if (appState.onboardingStep < 2) {
+        appState.onboardingStep += 1;
+        renderApp();
+      } else {
+        try {
+          markOnboardingCompleted();
+        } catch (error) {
+          console.error(error);
+          showToast(error.message);
+          break;
+        }
+        appState.onboardingCompleted = true;
+        appState.onboardingStep = 0;
+        startSetup();
+        appState.mode = 'setup';
+        renderApp();
+      }
+      break;
+    }
+    case 'onboarding-back': {
+      if (appState.onboardingStep > 0) {
+        appState.onboardingStep -= 1;
+      }
+      renderApp();
+      break;
+    }
+    case 'onboarding-skip': {
+      try {
+        markOnboardingCompleted();
+        markSetupCompleted();
+        appState.onboardingCompleted = true;
+        appState.onboardingStep = 0;
+        navigateToApp();
+      } catch (error) {
+        console.error(error);
+        showToast(error.message);
+      }
+      break;
+    }
     case 'open-portion-calculator':
       if (!recipes.some((recipe) => recipe.id === target.dataset.id)) break;
       appState.recipeId = target.dataset.id;

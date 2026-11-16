@@ -1,4 +1,4 @@
-# Recetario Casero · Camuflaje
+# Recetario Casero
 
 **Un recetario que sigue siendo un recetario, y que permite a una mujer en riesgo pedir ayuda sin que se note.**
 
@@ -30,7 +30,7 @@ Si quien la agrede o la controla revisa su celular, escribir "ayuda" o abrir una
 ## Cómo probarlo en 2 minutos
 
 1. Abre el enlace del prototipo en tu celular (idealmente en modo incógnito, para ver la primera vez).
-2. Verás la **bienvenida**. Prueba «Ahora no» para abrir el recetario o «Comenzar» para configurar; receta, contactos y PIN se pueden omitir.
+2. Verás tres pantallas de bienvenida. Prueba «Omitir» para abrir el recetario o avanza hasta «Empezar configuración»; receta, contactos y PIN se pueden omitir.
 3. Si configuraste PIN, escríbelo en la calculadora de una receta para activar el modo apoyo; el título cambia a «Recetario Secreto». El tutorial está disponible en Preferencias.
 4. Abre una receta, compártela con el menú normal del dispositivo y revisa el **mensaje antes de enviarlo**. Sin PIN, no se ofrecen contactos guardados ni ubicación.
 5. Abre una receta, usa la **Calculadora de porciones y costos** (escribe precios y mira el total) y escribe el PIN en el campo de porciones. Aparece brevemente «Receta especial lista.»; el título cambia a **Recetario Secreto** y aparecen **Tiendas**, **Bienestar** y «Salir». Prueba el asistente (*"tengo miedo"*) y el cierre por 60 segundos de inactividad: vuelve al título cotidiano y las funciones desaparecen.

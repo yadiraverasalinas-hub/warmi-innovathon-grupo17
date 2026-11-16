@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Onboarding Camuflaje (preview)</title>
+  <link rel="stylesheet" href="src/assets/styles/main.css">
+  <link rel="stylesheet" href="src/assets/styles/components.css">
+  <link rel="stylesheet" href="src/assets/styles/responsive.css">
+  <style>
+    .onboarding { max-width: 430px; margin: 0 auto; padding: 1rem; text-align:center; }
+    .onboarding-illustration { height:180px; margin:1rem auto; background-size:contain; background-repeat:no-repeat; background-position:center; }
+    .welcome-illustration { background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23e8a93b%22/%3E%3Ctext x=%22100%22 y=%22110%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22%3EBienvenida%3C/text%3E%3C/svg%3E'); }
+    .explore-illustration { background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Ccircle cx=%22100%22 cy=%22100%22 r=%2280%22 fill=%22%235a2a6b%22/%3E%3Ctext x=%22100%22 y=%22110%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22%3EExplora%3C/text%3E%3C/svg%3E'); }
+    .personalize-illustration { background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Cpolygon points=%220,200 100,0 200,200%22 fill=%22%237a2a6b%22/%3E%3Ctext x=%22100%22 y=%22130%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22%3EPersonaliza%3C/text%3E%3C/svg%3E'); }
+    .progress-dots { margin: 1rem 0; }
+    .progress-dots .dot { display:inline-block; width:10px; height:10px; margin:0 4px; border-radius:50%; background:var(--muted); }
+    .progress-dots .dot.active { background:var(--accent); }
+    .setup-preview { border:1px solid var(--line); padding:1rem; margin-top:2rem; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  const state = { step:0 };
+  const root = document.getElementById('root');
+
+  function render() {
+    const {step}=state;
+    const progress = ['○','○','○'];
+    progress[step]='●';
+    const progressHTML = `<div class="progress-dots">${progress.map(p=>'<span class="dot '+(p==='●'?'active':'')+'"></span>').join('')}</div>`;
+    const skipBtn = `<button class="button secondary skip" type="button" data-action="skip">Omitir</button>`;
+    const nextLabel = step===0?'Comenzar':step===1?'Continuar':'Empezar configuración';
+    const nextBtn = `<button class="button" type="button" data-action="next">${nextLabel}</button>`;
+    const backBtn = step>0 ? `<button class="button secondary" type="button" data-action="back">Atrás</button>` : '';
+    const illustrationClass = step===0?'welcome-illustration':step===1?'explore-illustration':'personalize-illustration';
+    const titles = ['¡Bienvenida a Camuflaje!','Explora a tu manera','Personaliza tu experiencia'];
+    const messages = [
+      'Un espacio para descubrir recetas, explorar y disfrutar a tu ritmo.',
+      'Encuentra nuevas ideas y descubre todo lo que puedes hacer.',
+      'Prepara tu espacio a tu ritmo. Tú decides qué opciones configurar.'
+    ];
+    const html = `
+      <section class="onboarding" aria-labelledby="onboarding-heading">
+        <h2 id="onboarding-heading">${titles[step]}</h2>
+        <div class="onboarding-illustration ${illustrationClass}"></div>
+        <p>${messages[step]}</p>
+        ${progressHTML}
+        ${skipBtn}
+        ${backBtn}
+        ${nextBtn}
+      </section>`;
+    root.innerHTML = html;
+  }
+
+  function renderSetupPreview() {
+    const html = `
+      <section class="setup-preview">
+        <h2>Configuración inicial (preview)</h2>
+        <p>Aquí aparecería la pantalla de configuración de la app.</p>
+        <button class="button" type="button" data-action="restart">Volver al onboarding</button>
+      </section>`;
+    root.innerHTML = html;
+  }
+
+  root.addEventListener('click', e=>{
+    const action = e.target.dataset.action;
+    if (!action) return;
+    if (action==='next') {
+      if (state.step<2) { state.step++; render(); }
+      else { renderSetupPreview(); }
+    } else if (action==='back') {
+      if (state.step>0) { state.step--; render(); }
+    } else if (action==='skip') {
+      renderSetupPreview();
+    } else if (action==='restart') {
+      state.step = 0; render();
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 270" fill="none">
+  <path d="M37 180c-1-35 22-57 58-60 12-37 47-53 82-41 31-31 81-19 91 19 39-2 68 23 66 59-2 43-39 65-96 67l-138 5c-38 1-62-14-63-49Z" fill="#F2E2F6"/>
+  <path d="M74 206c17-17 36-20 54-12m110 8c14-21 34-28 55-17" stroke="#D3B0DC" stroke-linecap="round" stroke-width="5"/>
+  <path d="m99 172 145-29 31 91-145 30-31-92Z" fill="#FFF9F5" stroke="#DCC8E2" stroke-width="5"/>
+  <path d="m114 177 115-23 20 57-116 24-19-58Z" fill="#F4D6BA"/>
+  <path d="M142 191c-3-15 9-27 21-27 13 0 20 10 24 11 4-13 18-21 31-15 13 7 11 24 4 34-10 14-27 22-42 26-18-6-34-14-38-29Z" fill="#85A261"/>
+  <path d="M150 193c4-5 10-7 16-6m13-9c4-4 9-5 14-3" stroke="#55733E" stroke-linecap="round" stroke-width="4"/>
+  <circle cx="174" cy="189" r="8" fill="#E87567"/>
+  <circle cx="205" cy="181" r="9" fill="#E87567"/>
+  <circle cx="192" cy="206" r="8" fill="#E87567"/>
+  <circle cx="174" cy="189" r="3" fill="#F7C76A"/>
+  <circle cx="205" cy="181" r="3" fill="#F7C76A"/>
+  <circle cx="192" cy="206" r="3" fill="#F7C76A"/>
+  <path d="m147 225 55-11m-49 22 58-12" stroke="#D7C6DB" stroke-linecap="round" stroke-width="4"/>
+  <circle cx="102" cy="105" r="42" fill="#DABDE4"/>
+  <circle cx="100" cy="102" r="16" stroke="#744181" stroke-width="7"/>
+  <path d="m112 115 15 15" stroke="#744181" stroke-linecap="round" stroke-width="7"/>
+  <circle cx="217" cy="68" r="34" fill="#F8DDE9"/>
+  <path d="M217 59c-8-12-24-5-21 8 2 9 12 16 21 22 10-6 19-13 21-22 3-13-13-20-21-8Z" fill="#D86C8B"/>
+  <circle cx="290" cy="128" r="31" fill="#B786C4"/>
+  <path d="M280 111h20v34l-10-7-10 7v-34Z" fill="#F9EFFB"/>
+  <path d="m62 142 12 7m-7 8 12 4m175-85 9-13m7 16 11-8m-8 22 12-1" stroke="#94709B" stroke-linecap="round" stroke-width="6"/>
+  <path d="M75 199c-12-16-26-22-41-19 3 19 17 31 39 34m212-2c12-16 26-22 41-19-3 19-17 31-39 34" fill="#87A765"/>
+  <path d="M59 214c-1-18 4-30 15-38m225 38c1-18-4-30-15-38" stroke="#587A48" stroke-linecap="round" stroke-width="4"/>
+  <ellipse cx="183" cy="241" rx="131" ry="12" fill="#EAD2EF"/>
+</svg>

@@ -1,3 +1,4 @@
+import { renderOnboarding } from './onboarding.js';
 import { recipes } from '../data/recipes.js';
 import { renderIcon } from '../components/icons.js';
 import { escapeHTML } from '../utils/security.js';
@@ -8,18 +9,14 @@ function localPhone(phone) {
 }
 
 export function renderSetup(state) {
+  if (!state.onboardingCompleted && state.onboardingStep < 3) {
+    return renderOnboarding(state);
+  }
+
   const step = state.setupStep;
   let content = '';
 
-  if (step === 0) {
-    content = `<h2>Bienvenida</h2>
-      <p class="setup-welcome">Camuflaje es un espacio cotidiano para descubrir recetas y encontrar ideas de bienestar.</p>
-      <p>Explora a tu ritmo. Puedes configurar opciones adicionales ahora o más adelante.</p>
-      <div class="action-row setup-welcome-actions">
-        <button class="button" type="button" data-action="setup-begin">Comenzar</button>
-        <button class="button secondary" type="button" data-action="setup-skip">Ahora no</button>
-      </div>`;
-  } else if (step === 1) {
+  if (step === 1) {
     content = `<h2>Tu recetario</h2>
       <div class="setup-tips" aria-label="Información importante">
         <p class="setup-tip"><span class="setup-tip-icon">${renderIcon('pot')}</span><strong>Tu receta es una señal secreta.</strong></p>
@@ -69,7 +66,7 @@ export function renderSetup(state) {
     ${content}
     ${step > 0 ? `<div class="action-row">
       ${step > 1 ? '<button class="button secondary" type="button" data-action="setup-back">Atrás</button>' : ''}
-      ${step === 5 ? '<button class="button" type="button" data-action="setup-next">Ir a mis recetas</button>' : `<button class="button" type="button" data-action="setup-next">${step === 1 ? 'Continuar' : 'Continuar'}</button>`}
+      ${step === 5 ? '<button class="button" type="button" data-action="setup-next">Ir a mis recetas</button>' : '<button class="button" type="button" data-action="setup-next">Continuar</button>'}
       ${[1, 2, 4].includes(step) ? '<button class="button secondary" type="button" data-action="setup-skip-field">Omitir</button>' : ''}
     </div>` : ''}
   </section>`;
