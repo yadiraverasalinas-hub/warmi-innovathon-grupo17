@@ -195,6 +195,7 @@ function renderApp() {
     'onboarding-active',
     appState.mode === 'setup' && !appState.onboardingCompleted && appState.onboardingStep < 3
   );
+  root.classList.toggle('setup-active', appState.mode === 'setup' && appState.setupStep > 0);
   if (appState.mode === 'setup') {
     root.innerHTML = renderSetup(appState);
     destroyMap();

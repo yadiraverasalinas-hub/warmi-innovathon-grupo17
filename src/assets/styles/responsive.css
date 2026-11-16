@@ -5,6 +5,24 @@
   .modal { max-height: min(85vh, 720px); border-radius: 22px; }
 }
 
+@media (max-width: 480px) {
+  #root.setup-active { padding: 12px 16px 24px; }
+  .setup { width: 100%; }
+  .setup-toolbar { margin-bottom: 16px; }
+  .setup-brand { gap: 7px; font-size: .96rem; }
+  .setup-brand .icon { width: 36px; height: 36px; padding: 7px; }
+  .button.quick-exit { min-height: 40px; padding: 7px 10px; font-size: .82rem; }
+  .setup-progress { margin-bottom: 14px; }
+  .setup-panel { padding: 20px 16px; border-radius: 21px; }
+  .setup-heading-row { align-items: flex-start; gap: 11px; margin-bottom: 18px; }
+  .setup-heading-icon { width: 44px; height: 44px; flex-basis: 44px; border-radius: 14px; }
+  .setup-heading-icon .icon { width: 22px; height: 22px; }
+  .setup-heading-row h2 { padding-top: 2px; font-size: clamp(1.3rem, 6vw, 1.6rem); }
+  .setup-recipe-grid { grid-template-columns: 1fr; }
+  .setup-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .setup-actions > [data-action="setup-next"] { grid-column: 1 / -1; order: -1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
