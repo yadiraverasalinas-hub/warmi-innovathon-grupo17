@@ -110,6 +110,8 @@ h1, h2, h3 { line-height: 1.2; }
 .setup-toolbar { position: sticky; z-index: 8; top: 0; display: flex; justify-content: flex-end; margin: -18px -16px 12px; padding: 10px 16px; background: var(--bg); }
 .button.quick-exit { min-height: 46px; color: #fff; background: #b93840; border-color: #b93840; }
 .setup-tips { display: grid; gap: 8px; margin: 0 0 14px; }
+.setup-welcome { margin: 18px 0 10px; font-size: 1.1rem; line-height: 1.55; }
+.setup-welcome-actions > * { flex: 1 1 130px; }
 .setup-tip { display: flex; align-items: flex-start; gap: 10px; margin: 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--card); font-size: .9rem; line-height: 1.45; }
 .setup-tip-icon { display: grid; width: 30px; height: 30px; flex: 0 0 30px; place-items: center; border-radius: 10px; color: var(--accent); background: var(--accent-soft); }
 .setup-tip-icon .icon { width: 19px; height: 19px; }

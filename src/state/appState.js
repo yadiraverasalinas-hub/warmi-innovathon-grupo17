@@ -6,6 +6,7 @@ export const appState = {
   query: '',
   favorites: [],
   profile: { trustedRecipeId: null, contacts: [] },
+  hasSupportPin: false,
   showAllShops: true,
   selectedPoint: null,
   modal: null,

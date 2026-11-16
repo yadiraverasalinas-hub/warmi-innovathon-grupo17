@@ -19,7 +19,7 @@
 | Retorno al recetario | 60 segundos sin actividad en vistas sensibles; al quedar oculta la app desde cualquier vista | Vuelve al recetario y limpia el contenido temporal; no borra el perfil |
 | Temporizador/check-in | Temporizador en una ficha de receta; al vencer, aviso y decisión manual de compartir | Una PWA no asegura tareas en segundo plano; nunca se envían mensajes ni ubicaciones automáticamente |
 | Señal al vencer | Intentar una sola vibración breve cuando vence un temporizador con la app abierta; conservar siempre el aviso visual | La API de vibración puede no estar disponible o permitida; no se promete como alerta confiable |
-| Confirmación del PIN | Mostrar brevemente «Receta especial lista.» tras un PIN correcto, sin cambiar el título ni la apariencia del recetario | Confirma el cambio de modo con un texto neutro y efímero |
+| Confirmación del PIN | Mostrar brevemente «Receta especial lista.» y cambiar el título a «Recetario Secreto» mientras el modo apoyo está activo | Confirma el cambio de modo con un texto neutro y efímero |
 | Tarjetas QR | Tarjeta impresa a doble cara para la demostración, QR verificado al MVP | Hace tangible la entrega de la app; el QR dirige solo al recetario público |
 | Claves de storage | No se renombran en este sprint | Evita migraciones con poco tiempo; riesgo documentado abajo |
 

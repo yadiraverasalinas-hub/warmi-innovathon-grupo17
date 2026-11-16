@@ -20,8 +20,8 @@
 - [ ] **T4. Diseño: primera pantalla en tres tarjetas** (RF-11) · Área: diseño · Issue: #__ · Dueña: __
   Hecho cuando: hay boceto con las 3 tarjetas (ícono + una frase) y la lista de recetas, sin bloques de texto largos; aprobado por el equipo.
 
-- [ ] **T5. Pantalla de bienvenida en tarjetas** (RF-11) · Área: frontend · Issue: #__ · Dueña: __ · Depende de T4
-  Hecho cuando: el paso 0 muestra las tres tarjetas y la elección de receta en una sola pantalla en móvil (≈360 px).
+- [ ] **T5. Bienvenida y configuración opcional** (RF-11, RF-12) · Área: frontend · Issue: #__ · Dueña: __ · Depende de T4
+  Hecho cuando: la bienvenida ofrece «Comenzar» y «Ahora no»; receta, contactos y PIN se pueden omitir y no se solicitan permisos de golpe.
 
 - [ ] **T6. Botón "Salir rápido"** (RF-13) · Área: frontend + diseño · Issue: #__ · Dueña: __ · Depende de T2
   Hecho cuando: visible y llamativo (coral, texto blanco, ícono) en todos los pasos; al tocarlo vuelve al recetario, no guarda nada y no reabre la configuración.
@@ -94,11 +94,11 @@
 - [ ] **T26. Señal de vibración al vencer el temporizador** (RF-30) · Área: frontend + accesibilidad · Issue: #__ · Dueña: __
   Hecho cuando: al vencer con la app abierta se intenta una sola vibración breve si es compatible; el aviso visual aparece siempre y la app no presenta la vibración como garantía.
 
-- [ ] **T27. Confirmación discreta del PIN** (RF-31) · Área: frontend + privacidad · Issue: #__ · Dueña: __
-  Hecho cuando: tras validar el PIN aparece brevemente «Receta especial lista.» sin cambiar el título o apariencia del recetario.
+- [ ] **T27. Confirmación del PIN y título de apoyo** (RF-31) · Área: frontend + privacidad · Issue: #__ · Dueña: __
+  Hecho cuando: tras validar el PIN aparece brevemente «Receta especial lista.» y el título cambia a «Recetario Secreto» mientras dure el modo apoyo.
 
-- [ ] **T28. Tutorial y simulación de la receta especial** (RF-32) · Área: frontend + privacidad · Issue: #__ · Dueña: __
-  Hecho cuando: el tutorial acompaña acciones reales en Favoritas, receta, temporizador, calculadora, PIN, Tiendas, Bienestar y compartir; explica los límites del temporizador, mantiene el foco alineado mientras se desplaza o cambia el contenido, explica que Tiendas muestra ejemplos no verificados, mantiene la tarjeta visible sobre los modales, no avanza sin la acción esperada y termina en la vista previa de compartir con «Terminar» y «Salir», sin abrir WhatsApp ni enviar mensajes.
+- [ ] **T28. Tutorial adaptable y consultable** (RF-32) · Área: frontend + privacidad · Issue: #__ · Dueña: __
+  Hecho cuando: el tutorial está disponible desde Preferencias y solo pide acciones disponibles según receta, PIN y contactos configurados; explica la salida rápida y no abre WhatsApp ni envía mensajes.
 
 ## Orden de prioridad
 

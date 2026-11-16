@@ -44,11 +44,10 @@ try {
   const settings = loadSettings();
   appState.favorites = settings.favorites;
   appState.profile = settings.profile;
+  appState.hasSupportPin = settings.hasSupportPin;
   appState.preferences = settings.preferences;
-  const returningUser = settings.setupCompleted || settings.hasPriorUse;
-  const hasExistingProfile = Boolean(settings.profile.trustedRecipeId || settings.profile.contacts.length);
-  initialSetupRequired = !settings.setupCompleted || (hasExistingProfile && !settings.hasSupportPin);
-  if (returningUser && !settings.setupCompleted) markSetupCompleted();
+  initialSetupRequired = !settings.setupCompleted && !settings.hasPriorUse;
+  if (settings.hasPriorUse && !settings.setupCompleted) markSetupCompleted();
 } catch (error) {
   console.error(error);
   appState.storageError = error.message;
@@ -76,6 +75,7 @@ function renderSettings() {
       </label>
     </div>
     <button class="button secondary" type="button" data-action="clear-favorites">Limpiar favoritas</button>
+    <button class="button secondary" type="button" data-action="restart-tutorial">Ver tutorial</button>
     <button class="button secondary theme-toggle" type="button" data-action="toggle-theme" aria-label="${isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}">${renderIcon(isDark ? 'sun' : 'moon')}</button>
     ${deferredInstallPrompt ? '<button class="button secondary" type="button" data-action="install-app">Instalar aplicación</button>' : '<p class="note">Para instalar: usa la opción del navegador “Añadir a pantalla de inicio”, si está disponible.</p>'}
   </div>`;
@@ -200,7 +200,9 @@ function renderApp() {
   let title = appState.recipeId
     ? ['Receta', '']
     : (titles[appState.tab] ?? titles.home);
-  if (!appState.recipeId && appState.tab === 'home' && appState.preferences.name) {
+  if (!appState.recipeId && appState.tab === 'home' && appState.supportUnlocked) {
+    title = ['Recetario Secreto', title[1]];
+  } else if (!appState.recipeId && appState.tab === 'home' && appState.preferences.name) {
     title = [`Hola, ${appState.preferences.name}`, title[1]];
   }
   const content = appState.recipeId
@@ -351,7 +353,7 @@ function handleVisibilityChange() {
 }
 
 function startSetup() {
-  appState.setupStep = 0;
+  appState.setupStep = 1;
   appState.tutorialActive = false;
   appState.tutorialStep = 0;
   appState.tutorialHistory = [];
@@ -373,7 +375,10 @@ async function completeSetup(startTutorial = false) {
       contacts: appState.setupContacts.filter((contact) => contact.name.trim() && contact.phone.trim())
     };
     saveProfile(appState.profile);
-    await saveSupportPin(appState.setupPin);
+    if (appState.setupPin) {
+      await saveSupportPin(appState.setupPin);
+      appState.hasSupportPin = true;
+    }
     const favorites = [...new Set([appState.profile.trustedRecipeId, ...appState.favorites].filter(Boolean))];
     saveFavorites(favorites);
     markSetupCompleted();
@@ -390,7 +395,10 @@ async function completeSetup(startTutorial = false) {
 function route() {
   const hash = location.hash;
   if (initialSetupRequired) {
-    if (appState.mode !== 'setup') startSetup();
+    if (appState.mode !== 'setup') {
+      startSetup();
+      appState.setupStep = 0;
+    }
     appState.mode = 'setup';
   } else {
     appState.mode = 'app';
@@ -542,6 +550,7 @@ async function handleClick(event) {
       break;
     case 'open-settings':
       appState.modal = 'settings';
+      advanceTutorial(appState, 'open-settings', {}, tutorialSnapshot);
       lastSensitiveActivity = Date.now();
       renderApp();
       break;
@@ -551,6 +560,30 @@ async function handleClick(event) {
       appState.mode = 'setup';
       renderApp();
       window.scrollTo(0, 0);
+      break;
+    case 'setup-begin':
+      if (appState.mode !== 'setup' || appState.setupStep !== 0) break;
+      appState.setupStep = 1;
+      renderApp();
+      break;
+    case 'setup-skip':
+      if (appState.mode !== 'setup' || appState.setupStep !== 0) break;
+      try {
+        markSetupCompleted();
+        navigateToApp();
+      } catch (error) {
+        console.error(error);
+        showToast(error.message);
+      }
+      break;
+    case 'restart-tutorial':
+      if (appState.modal !== 'settings') break;
+      appState.modal = null;
+      appState.tutorialActive = true;
+      appState.tutorialStep = 0;
+      appState.tutorialHistory = [];
+      lastSensitiveActivity = Date.now();
+      renderApp();
       break;
     case 'open-portion-calculator':
       if (!recipes.some((recipe) => recipe.id === target.dataset.id)) break;
@@ -609,6 +642,7 @@ async function handleClick(event) {
         markSetupCompleted();
         appState.favorites = [];
         appState.profile = { trustedRecipeId: null, contacts: [] };
+        appState.hasSupportPin = false;
         appState.preferences = { theme: 'light', fontSize: 'normal', recipeLayout: 'grid', name: '' };
         applyPreferences();
         resetTransientState();
@@ -738,7 +772,7 @@ async function handleClick(event) {
       renderApp();
       break;
     case 'setup-tutorial':
-      if (appState.mode !== 'setup' || appState.setupStep !== 4) break;
+      if (appState.mode !== 'setup' || appState.setupStep !== 5) break;
       await completeSetup(true);
       break;
     case 'tutorial-previous':
@@ -757,21 +791,29 @@ async function handleClick(event) {
       returnToRecipes();
       break;
     case 'setup-next':
-      if (appState.setupStep === 0 && !recipes.some((recipe) => recipe.id === appState.setupRecipeId)) {
-        showToast('Elige una receta para continuar.');
-        break;
+      if (appState.setupStep === 2) {
+        const hasEnteredContact = appState.setupContacts.some(
+          (contact) => contact.name.trim() || contact.phone.trim()
+        );
+        if (hasEnteredContact) {
+          const result = validateContacts(appState.setupContacts);
+          if (!result.valid) {
+            appState.setupError = result.message;
+            renderApp();
+            break;
+          }
+          appState.setupContacts = result.contacts;
+        } else {
+          appState.setupContacts = [];
+        }
+        appState.setupError = '';
       }
-      if (appState.setupStep === 1) {
-        const result = validateContacts(appState.setupContacts);
-        if (!result.valid) {
-          appState.setupError = result.message;
+      if (appState.setupStep === 4) {
+        if (!appState.setupPin && !appState.setupPinConfirm) {
+          appState.setupStep += 1;
           renderApp();
           break;
         }
-        appState.setupContacts = result.contacts;
-        appState.setupError = '';
-      }
-      if (appState.setupStep === 3) {
         if (!/^\d{6}$/.test(appState.setupPin) || appState.setupPin !== appState.setupPinConfirm) {
           appState.setupError = 'Escribe el mismo PIN de 6 dígitos en ambos campos.';
           renderApp();
@@ -779,12 +821,30 @@ async function handleClick(event) {
         }
         appState.setupError = '';
       }
-      if (appState.setupStep < 4) {
+      if (appState.setupStep < 5) {
         appState.setupStep += 1;
         renderApp();
         break;
       }
       await completeSetup();
+      break;
+    case 'setup-skip-field':
+      if (appState.mode !== 'setup') break;
+      if (appState.setupStep === 1) {
+        appState.setupRecipeId = appState.profile.trustedRecipeId;
+        appState.setupStep = 2;
+      } else if (appState.setupStep === 2) {
+        appState.setupContacts = [...appState.profile.contacts];
+        appState.setupStep = 3;
+      } else if (appState.setupStep === 4) {
+        appState.setupPin = '';
+        appState.setupPinConfirm = '';
+        appState.setupError = '';
+        appState.setupStep = 5;
+      } else {
+        break;
+      }
+      renderApp();
       break;
     case 'quick-exit':
       returnToRecipes();
@@ -842,7 +902,9 @@ root.addEventListener('input', (event) => {
   if (target.matches('[data-preference="name"]')) {
     appState.preferences.name = target.value.trim().slice(0, 40);
     const title = document.querySelector('.topbar h1');
-    if (title) title.textContent = appState.preferences.name ? `Hola, ${appState.preferences.name}` : 'Recetario Casero';
+    if (title) title.textContent = appState.supportUnlocked
+      ? 'Recetario Secreto'
+      : appState.preferences.name ? `Hola, ${appState.preferences.name}` : 'Recetario Casero';
   }
 });
 

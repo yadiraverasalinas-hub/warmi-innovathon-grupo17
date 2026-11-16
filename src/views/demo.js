@@ -1,11 +1,12 @@
 import { escapeHTML } from '../utils/security.js';
-import { tutorialSteps } from '../state/tutorial.js';
+import { getTutorialSteps } from '../state/tutorial.js';
 
 export function renderTutorialOverlay(state) {
-  const step = tutorialSteps[state.tutorialStep];
+  const steps = getTutorialSteps(state);
+  const step = steps[state.tutorialStep];
   if (!step) return '';
 
-  const lastStep = state.tutorialStep === tutorialSteps.length - 1;
+  const lastStep = state.tutorialStep === steps.length - 1;
   return `<div class="tutorial-overlay" aria-label="Tutorial interactivo">
     <div class="tutorial-scrim tutorial-scrim-full" aria-hidden="true"></div>
     <div class="tutorial-scrim tutorial-scrim-top" aria-hidden="true"></div>
@@ -13,7 +14,7 @@ export function renderTutorialOverlay(state) {
     <div class="tutorial-scrim tutorial-scrim-left" aria-hidden="true"></div>
     <div class="tutorial-scrim tutorial-scrim-right" aria-hidden="true"></div>
     <section class="tutorial-card" data-placement="${step.placement ?? 'bottom'}" role="region" aria-live="polite" aria-labelledby="tutorial-title">
-      <p class="tutorial-progress">${state.tutorialStep + 1} de ${tutorialSteps.length}</p>
+      <p class="tutorial-progress">${state.tutorialStep + 1} de ${steps.length}</p>
       <h2 id="tutorial-title">${escapeHTML(step.title)}</h2>
       <p class="tutorial-description">${escapeHTML(step.description)}</p>
       ${lastStep ? '<p class="tutorial-complete-note">La práctica terminó sin enviar mensajes.</p>' : ''}
