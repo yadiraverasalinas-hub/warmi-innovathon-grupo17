@@ -24,6 +24,12 @@ export const tutorialSteps = [
     target: 'trusted-recipe'
   },
   {
+    title: 'Conoce el temporizador',
+    description: 'El temporizador de cocina avisa solo mientras la app sigue abierta. Al activar el modo apoyo, «Iniciar» consulta la ubicación que tú autorizas y prepara un aviso; al vencer, tú decides si compartirlo. Nunca envía mensajes por su cuenta.',
+    action: 'tutorial-continue',
+    target: 'timer-panel'
+  },
+  {
     title: 'Explora la calculadora',
     description: 'Abre la calculadora de porciones y costos desde la receta.',
     action: 'open-portion-calculator',
@@ -114,6 +120,7 @@ export function getTutorialTargetSelector(state) {
     return '[aria-labelledby="shops-title"] .banner';
   }
   if (step.target === 'wellbeing-title') return '#wellbeing-title';
+  if (step.target === 'timer-panel') return '.timer-panel';
   if (step.target === 'portion-input') {
     return '#portion-count, [data-form="portion-calculator"] button[type="submit"]';
   }

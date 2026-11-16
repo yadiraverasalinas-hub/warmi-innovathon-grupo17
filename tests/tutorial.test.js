@@ -39,12 +39,21 @@ test('the recipe and calculator steps require the configured recipe', () => {
 
   assert.equal(advanceTutorial(state, 'open-recipe', { id: 'ceviche' }), false);
   assert.equal(advanceTutorial(state, 'open-recipe', { id: 'lomo' }), true);
-  state.tutorialStep = 2;
+  state.tutorialStep = 3;
   assert.equal(advanceTutorial(state, 'open-portion-calculator', { id: 'lomo' }), true);
 });
 
+test('the timer explanation highlights its real panel and advances only with Continue', () => {
+  const state = createTutorialState({ tutorialStep: 2 });
+
+  assert.equal(getTutorialTargetSelector(state), '.timer-panel');
+  assert.equal(advanceTutorial(state, 'open-portion-calculator', { id: 'lomo' }), false);
+  assert.equal(advanceTutorial(state, 'tutorial-continue'), true);
+  assert.equal(state.tutorialStep, 3);
+});
+
 test('the PIN step advances only after the normal app unlocks support mode', () => {
-  const state = createTutorialState({ tutorialStep: 3 });
+  const state = createTutorialState({ tutorialStep: 4 });
 
   assert.equal(advanceTutorial(state, 'pin-unlocked'), false);
   state.supportUnlocked = true;
@@ -65,7 +74,7 @@ test('the previous control restores the real app view from before the action', (
 
 test('going back from the PIN step restores the calculator before unlock', () => {
   const state = createTutorialState({
-    tutorialStep: 3,
+    tutorialStep: 4,
     modal: 'portion-calculator',
     recipeId: 'lomo'
   });
@@ -83,42 +92,42 @@ test('going back from the PIN step restores the calculator before unlock', () =>
 });
 
 test('recipient selection advances only from the recipe-sharing preview', () => {
-  const state = createTutorialState({ tutorialStep: 11 });
+  const state = createTutorialState({ tutorialStep: 12 });
 
   assert.equal(advanceTutorial(state, 'recipient-selected'), false);
   state.shareDraft = { recipeId: 'lomo', mode: 'recipe' };
   assert.equal(advanceTutorial(state, 'recipient-selected'), true);
-  assert.equal(state.tutorialStep, 12);
+  assert.equal(state.tutorialStep, 13);
 });
 
 test('stores and wellbeing require navigating to their real tabs and reading the explanations', () => {
-  const state = createTutorialState({ tutorialStep: 4 });
+  const state = createTutorialState({ tutorialStep: 5 });
 
   assert.equal(getTutorialTargetSelector(state), '[data-action="navigate"][data-tab="shop"]');
   assert.equal(advanceTutorial(state, 'navigate', { tab: 'fav' }), false);
   assert.equal(advanceTutorial(state, 'navigate', { tab: 'shop' }), true);
-  assert.equal(state.tutorialStep, 5);
+  assert.equal(state.tutorialStep, 6);
   assert.equal(getTutorialTargetSelector(state), '[aria-labelledby="shops-title"] .banner');
   assert.equal(advanceTutorial(state, 'navigate', { tab: 'well' }), false);
   assert.equal(advanceTutorial(state, 'tutorial-continue'), true);
-  assert.equal(state.tutorialStep, 6);
+  assert.equal(state.tutorialStep, 7);
   assert.equal(getTutorialTargetSelector(state), '[data-action="navigate"][data-tab="well"]');
   assert.equal(advanceTutorial(state, 'navigate', { tab: 'well' }), true);
-  assert.equal(state.tutorialStep, 7);
+  assert.equal(state.tutorialStep, 8);
   assert.equal(getTutorialTargetSelector(state), '#wellbeing-title');
   assert.equal(advanceTutorial(state, 'tutorial-continue'), true);
-  assert.equal(state.tutorialStep, 8);
+  assert.equal(state.tutorialStep, 9);
 });
 
 test('tutorial highlights the live control for the current step', () => {
   const state = createTutorialState();
 
   assert.equal(getTutorialTargetSelector(state), '[data-action="navigate"][data-tab="fav"]');
-  state.tutorialStep = 3;
+  state.tutorialStep = 4;
   assert.equal(
     getTutorialTargetSelector(state),
     '#portion-count, [data-form="portion-calculator"] button[type="submit"]'
   );
-  state.tutorialStep = 12;
+  state.tutorialStep = 13;
   assert.equal(getTutorialTargetSelector(state), null);
 });

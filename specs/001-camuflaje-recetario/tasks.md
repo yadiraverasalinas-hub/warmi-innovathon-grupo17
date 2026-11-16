@@ -98,7 +98,7 @@
   Hecho cuando: tras validar el PIN aparece brevemente «Receta especial lista.» sin cambiar el título o apariencia del recetario.
 
 - [ ] **T28. Tutorial y simulación de la receta especial** (RF-32) · Área: frontend + privacidad · Issue: #__ · Dueña: __
-  Hecho cuando: el tutorial acompaña acciones reales en Favoritas, receta, calculadora, PIN, Tiendas, Bienestar y compartir; explica que Tiendas muestra ejemplos no verificados, mantiene la tarjeta visible sobre los modales, no avanza sin la acción esperada y termina en la vista previa de compartir con «Terminar» y «Salir», sin abrir WhatsApp ni enviar mensajes.
+  Hecho cuando: el tutorial acompaña acciones reales en Favoritas, receta, temporizador, calculadora, PIN, Tiendas, Bienestar y compartir; explica los límites del temporizador, mantiene el foco alineado mientras se desplaza o cambia el contenido, explica que Tiendas muestra ejemplos no verificados, mantiene la tarjeta visible sobre los modales, no avanza sin la acción esperada y termina en la vista previa de compartir con «Terminar» y «Salir», sin abrir WhatsApp ni enviar mensajes.
 
 ## Orden de prioridad
 

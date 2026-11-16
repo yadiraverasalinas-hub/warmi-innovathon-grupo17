@@ -87,7 +87,7 @@ function applyPreferences() {
   document.documentElement.dataset.fontSize = appState.preferences.fontSize;
 }
 
-function positionTutorialSpotlight() {
+function updateTutorialSpotlight() {
   const selector = getTutorialTargetSelector(appState);
   const targets = selector ? [...root.querySelectorAll(selector)] : [];
   const card = root.querySelector('.tutorial-card');
@@ -107,6 +107,7 @@ function positionTutorialSpotlight() {
     return;
   }
 
+  targets.forEach((target) => target.classList.add('tutorial-highlight'));
   fullScrim.hidden = true;
   const getBounds = () => {
     const rects = targets.map((target) => target.getBoundingClientRect());
@@ -117,17 +118,7 @@ function positionTutorialSpotlight() {
       bottom: Math.max(...rects.map((rect) => rect.bottom))
     };
   };
-  let bounds = getBounds();
-  if (bounds.top < 0 || bounds.bottom > window.innerHeight) {
-    const target = bounds.top < 0 ? targets[0] : targets[targets.length - 1];
-    target.scrollIntoView({
-      block: 'center',
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
-    });
-    bounds = getBounds();
-  }
-  targets.forEach((target) => target.classList.add('tutorial-highlight'));
-  targets[0].focus?.({ preventScroll: true });
+  const bounds = getBounds();
 
   const padding = 10;
   const viewportWidth = document.documentElement.clientWidth;
@@ -151,6 +142,49 @@ function positionTutorialSpotlight() {
   const centerY = (bounds.top + bounds.bottom) / 2;
   card.classList.add(centerY > viewportHeight * 0.55 ? 'tutorial-card-top' : 'tutorial-card-bottom');
 }
+
+function positionTutorialSpotlight() {
+  const selector = getTutorialTargetSelector(appState);
+  const targets = selector ? [...root.querySelectorAll(selector)] : [];
+  if (!targets.length) {
+    updateTutorialSpotlight();
+    return;
+  }
+
+  const rects = targets.map((target) => target.getBoundingClientRect());
+  const top = Math.min(...rects.map((rect) => rect.top));
+  const bottom = Math.max(...rects.map((rect) => rect.bottom));
+  if (top < 0 || bottom > window.innerHeight) {
+    const target = top < 0 ? targets[0] : targets[targets.length - 1];
+    target.scrollIntoView({
+      block: 'center',
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    });
+  }
+  targets.forEach((target) => target.classList.add('tutorial-highlight'));
+  targets[0].focus?.({ preventScroll: true });
+  updateTutorialSpotlight();
+}
+
+let tutorialSpotlightFrame = 0;
+function scheduleTutorialSpotlightUpdate() {
+  if (!appState.tutorialActive || tutorialSpotlightFrame) return;
+  tutorialSpotlightFrame = window.requestAnimationFrame(() => {
+    tutorialSpotlightFrame = 0;
+    updateTutorialSpotlight();
+  });
+}
+
+window.addEventListener('scroll', scheduleTutorialSpotlightUpdate, true);
+window.addEventListener('resize', () => {
+  if (appState.tutorialActive) positionTutorialSpotlight();
+});
+root.addEventListener('load', () => {
+  if (appState.tutorialActive) window.requestAnimationFrame(positionTutorialSpotlight);
+}, true);
+root.addEventListener('error', () => {
+  if (appState.tutorialActive) window.requestAnimationFrame(positionTutorialSpotlight);
+}, true);
 
 function renderApp() {
   root.classList.toggle('tutorial-active', appState.tutorialActive);
@@ -200,12 +234,6 @@ function renderApp() {
 
   if (appState.tutorialActive) {
     positionTutorialSpotlight();
-    const recipeImage = root.querySelector('.recipe-detail-image');
-    if (recipeImage && !recipeImage.complete) {
-      const repositionSpotlight = () => window.requestAnimationFrame(positionTutorialSpotlight);
-      recipeImage.addEventListener('load', repositionSpotlight, { once: true });
-      recipeImage.addEventListener('error', repositionSpotlight, { once: true });
-    }
   }
 
   if (appState.tab === 'shop' && !appState.recipeId) {
@@ -470,15 +498,15 @@ async function handleClick(event) {
       appState.shareDraft = null;
       if (appState.tab !== 'well') appState.chat = [];
       advanceTutorial(appState, 'navigate', { tab: target.dataset.tab }, tutorialSnapshot);
-      renderApp();
       window.scrollTo(0, 0);
+      renderApp();
       break;
     case 'open-recipe':
       appState.recipeId = target.dataset.id;
       appState.shareDraft = null;
       advanceTutorial(appState, 'open-recipe', { id: target.dataset.id }, tutorialSnapshot);
-      renderApp();
       window.scrollTo(0, 0);
+      renderApp();
       break;
     case 'back':
       appState.recipeId = null;
